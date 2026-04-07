@@ -2,11 +2,14 @@
 // IMPORTS & MODULES
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-import { validateUser } from "../utility/utils";
+import { checkUser, validateUser, checkUser, hashPassword } from "../utility/utils";
+import { User } from "../models/user.js";
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // CONTROLLER FUNCTIONS
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+const filePath = "./data/users.json"    // Internal file-path
 
 export async function login(request, response) {
     try {
@@ -22,6 +25,32 @@ export async function login(request, response) {
         }
     } catch (error) {
         console.error("Error during login:", error);
+        response.status(500).send("Internal Server Error");
+    }
+}
+
+export async function createUser(request, response) {
+    try {
+        const { username, password, first_name, last_name, level } = request.body;
+        
+        const userExists = await checkUser(username, filePath);
+
+        if (!userExists) {
+            return response.status(400).send("User already exists");
+        }
+
+        const hashedPassword = await hashPassword(password);
+        const date = new Date();
+
+        const newUser = new User(username, hashedPassword, first_name, last_name, date, level);
+
+        const users = await loadUsers(filePath);
+        users.push(newUser);
+        await saveUser(filePath, users);
+
+        response.redirect('/login');
+    } catch (error) {
+        console.error("Error during user registration:", error);
         response.status(500).send("Internal Server Error");
     }
 }

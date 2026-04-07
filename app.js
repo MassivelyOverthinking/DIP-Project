@@ -3,8 +3,9 @@
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 import express, { request, response } from "express"
-import { fileExists, loadUsers } from "./utils/file_utils.js"
+import { fileExists, loadUsers } from "./utility/utils.js"
 import session from "express-session"
+
 import userRouter from "./routes/userRoute.js"
 import chatRouter from "./routes/chatRoute.js"
 import messageRouter from "./routes/messageRoute.js"
@@ -16,11 +17,7 @@ import messageRouter from "./routes/messageRoute.js"
 const port = 8000                       // Port number
 const app = express()                   // Express entry-point
 
-const filePath = "./data/users.json"    // Internal file-path
-
-let users = []
-await fileExists()                      // Check file exists
-await loadUsers()                       // Load users into memory
+const filepath = "/data/users.json"     // Internal file-path
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // MIDDLEWARE & VIEW ENGINE
@@ -55,6 +52,6 @@ app.use((request, response, next) => {
 })
 
 // App configuration
-app.listen(8000, ()=> {
+app.listen(8000, () => {
     console.log(`Chat project is now running on port: ${port} 🔥`)
 })
