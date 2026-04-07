@@ -64,6 +64,12 @@ export async function checkUser(username, filepath) {
     }
 }
 
+export async function loadAndSaveUser(user, filepath) {
+    const users = await loadUsers(filepath);
+    users.push(user);
+    await saveUser(filepath, users);
+}
+
 // Utilise Bcrypt library to quickly compare hashed password with stored version.
 export async function hashPassword(password) {
     return await bcrypt.hash(password, 10)

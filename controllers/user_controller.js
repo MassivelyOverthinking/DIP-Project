@@ -2,7 +2,7 @@
 // IMPORTS & MODULES
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-import { checkUser, validateUser, checkUser, hashPassword } from "../utility/utils";
+import { validateUser, checkUser, hashPassword, loadAndSaveUser } from "../utility/utils.js";
 import { User } from "../models/user.js";
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -19,7 +19,7 @@ export async function login(request, response) {
         if (isValidUser) {
             request.session.isValidUser = true;
             request.session.username = username;
-            response.redirect('/');
+            response.redirect('/home');
         } else {
             response.render('noAccess');
         }
@@ -44,9 +44,7 @@ export async function createUser(request, response) {
 
         const newUser = new User(username, hashedPassword, first_name, last_name, date, level);
 
-        const users = await loadUsers(filePath);
-        users.push(newUser);
-        await saveUser(filePath, users);
+        await loadAndSaveUser(newUser, filePath);
 
         response.redirect('/login');
     } catch (error) {

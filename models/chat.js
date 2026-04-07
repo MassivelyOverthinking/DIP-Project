@@ -1,4 +1,4 @@
-export default class Chat {
+export class Chat {
     constructor(name, date, owner) {
         this.name = name;
         this.date = date;

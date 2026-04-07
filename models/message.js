@@ -1,4 +1,4 @@
-export default class Message {
+export class Message {
     constructor(message, date, owner, chatID) {
         this.message = message;
         this.date = date;

@@ -3,7 +3,6 @@
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 import express, { request, response } from "express"
-import { fileExists, loadUsers } from "./utility/utils.js"
 import session from "express-session"
 
 import userRouter from "./routes/userRoute.js"
@@ -31,6 +30,14 @@ app.use(session({
     resave: true
 }))
 
+app.get('/', (request, response) => {
+    if (request.session.isValidUser) {
+        response.render("home", { username: request.session.username })
+    } else {
+        response.redirect("/user/login")
+    }
+})
+
 app.use(express.json());
 app.use('/user', userRouter);
 app.use('/chat', chatRouter);
@@ -44,7 +51,6 @@ app.use(express.json())             // Middleware to properly receive and parse 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // EXPRESS ROUTES
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
 
 // Catch ALL incorrect endpoint requests.
 app.use((request, response, next) => {
