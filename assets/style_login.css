@@ -1,0 +1,59 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+}
+
+/* Title */
+p {
+    font-size: 24px; /* missing unit before */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Form container */
+#signin {
+    height: auto;
+    width: 300px;
+    margin: 100px auto; /* center horizontally */
+    border: 2px solid rgb(8, 77, 181); /* fixed border syntax */
+    border-radius: 10px;
+    padding: 30px;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+#adduser {
+    height: auto;
+    width: 300px;
+    margin: 100px auto; /* center horizontally */
+    border: 2px solid rgb(8, 77, 181); /* fixed border syntax */
+    border-radius: 10px;
+    padding: 30px;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Inputs */
+input {
+    width: 100%;
+    height: 40px;
+    margin-bottom: 15px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Button */
+button {
+    width: 100%;
+    height: 40px;
+    background-color: rgb(8, 77, 181);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: rgb(6, 60, 140);
+}

@@ -2,6 +2,7 @@ import express from 'express';
 
 const router = express.Router();
 
-router.post('/register', user);
+router.post('/send', login);
+router.post('/delete', user);
 
 export default router;
