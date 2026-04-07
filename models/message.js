@@ -1,4 +1,8 @@
-export default class Message {
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// MODEL: MESSAGE-CLASS
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+export class Message {
     constructor(message, date, owner, chatID) {
         this.message = message;
         this.date = date;

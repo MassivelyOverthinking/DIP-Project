@@ -1,4 +1,7 @@
-export default class Chat {
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// MODEL: CHAT-CLASS
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+export class Chat {
     constructor(name, date, owner) {
         this.name = name;
         this.date = date;
