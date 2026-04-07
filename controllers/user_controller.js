@@ -6,7 +6,7 @@ import { validateUser, checkUser, hashPassword, loadAndSaveUser } from "../utili
 import { User } from "../models/user.js";
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// CONTROLLER FUNCTIONS
+// USER CONTROLLER FUNCTIONS
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 const filePath = "./data/users.json"    // Internal file-path

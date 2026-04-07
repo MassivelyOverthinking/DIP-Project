@@ -16,8 +16,6 @@ import messageRouter from "./routes/messageRoute.js"
 const port = 8000                       // Port number
 const app = express()                   // Express entry-point
 
-const filepath = "/data/users.json"     // Internal file-path
-
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // MIDDLEWARE & VIEW ENGINE
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -30,6 +28,17 @@ app.use(session({
     resave: true
 }))
 
+// Middleware
+app.use(express.json());            // Middleware to properly receive and parse JSON-formatted data.
+app.use(express.static('assets'))   // Middleware to properly utilise internal Assets-folder
+app.use(express.urlencoded())       // Middleware to properly receive and parse URL-formatted data.
+app.use(express.json())             // Middleware to properly receive and parse JSON-formatted data.
+
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// EXPRESS ROUTES
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+// Default route => Check if user is currently stored in Session.
 app.get('/', (request, response) => {
     if (request.session.isValidUser) {
         response.render("home", { username: request.session.username })
@@ -38,19 +47,10 @@ app.get('/', (request, response) => {
     }
 })
 
-app.use(express.json());
+// User, Chat and Message routes.
 app.use('/user', userRouter);
 app.use('/chat', chatRouter);
 app.use('/messages', messageRouter);
-
-// Middleware
-app.use(express.static('assets'))   // Middleware to properly utilise internal Assets-folder
-app.use(express.urlencoded())       // Middleware to properly receive and parse URL-formatted data.
-app.use(express.json())             // Middleware to properly receive and parse JSON-formatted data.
-
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// EXPRESS ROUTES
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 // Catch ALL incorrect endpoint requests.
 app.use((request, response, next) => {

@@ -1,4 +1,6 @@
-
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// UTILITY FUNCTIONS
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 // Check if the requested User is correct and the related password is correct.
 export async function validateUser(username, password) {
@@ -53,6 +55,7 @@ export async function saveUser(filepath,users) {
     }
 }
 
+// Check if the requested User is already stored in the internal User-list.
 export async function checkUser(username, filepath) {
     try {
         const users = await loadUsers(filepath);
@@ -64,6 +67,7 @@ export async function checkUser(username, filepath) {
     }
 }
 
+// Load the current users, add the new user and save the updated list back to persistent storage.
 export async function loadAndSaveUser(user, filepath) {
     const users = await loadUsers(filepath);
     users.push(user);
