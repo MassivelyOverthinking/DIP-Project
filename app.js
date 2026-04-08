@@ -49,7 +49,7 @@ await UserController.initialize();
 // Default route => Check if user is currently stored in Session.
 app.get('/', (request, response) => {
     if (request.session.isValidUser) {
-        response.send(`Welcome back, ${request.session.username}!`)
+        response.render("home", { user: request.session.user });
     } else {
         response.redirect("/user/login")
     }

@@ -56,8 +56,8 @@ export class UserController {
 
             if (isValidUser) {
                 request.session.isValidUser = true;
-                request.session.username = username;
-                return response.send(`User successfully logged in: ${username}`);
+                request.session.user = UserController.findUserByUsername(username);
+                return response.render("home", { user: request.session.user });
             }
 
             return response.redirect(`/user/no-access`);
@@ -94,7 +94,7 @@ export class UserController {
             UserController.users.push(newUser);
             await UserController.saveUsers();
 
-            return response.send(`User created successfully: ${username}`);
+            return response.redirect("/user/success");
         } catch (error) {
             console.error("Error during user registration:", error);
             return response.status(500).send("Internal Server Error");
