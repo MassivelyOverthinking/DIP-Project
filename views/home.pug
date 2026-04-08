@@ -20,8 +20,13 @@ html(lang="en")
                     p.role-text You are a regular user.
 
                 .home-actions
-                    button.primary-btn(type="button")
-                        strong Create Chatroom
+                    a(href="/chat/create")
+                        button.secondary-btn(type="button")
+                            strong Create Chatroom
+                    if user.level === "3"
+                        a(href="/admin")
+                            button.secondary-btn(type="button")
+                                strong Manage
                     a(href="/user/logout")
                         button.secondary-btn(type="button")
                             strong Log out

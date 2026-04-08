@@ -158,31 +158,3 @@ body {
     color: #ffffff;
     font-size: 0.98rem;
 }
-
-@media (max-width: 640px) {
-    .home-card {
-        padding: 24px;
-    }
-
-    .home-header h1 {
-        font-size: 1.65rem;
-    }
-
-    .home-actions {
-        flex-direction: column;
-    }
-
-    .primary-btn,
-    .secondary-btn {
-        width: 100%;
-    }
-
-    .chat-card {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .chat-action {
-        width: 100%;
-    }
-}

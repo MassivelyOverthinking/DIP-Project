@@ -4,7 +4,6 @@
 
 import { hashPassword, comparePasswords } from "../utility/utils.js";
 import { User } from "../models/user.js";
-import bcrypt from "bcrypt"
 import fs from "fs/promises"
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -14,31 +13,35 @@ import fs from "fs/promises"
 const filePath = "./data/users.json"    // Internal file-path
 
 export class UserController {
-    static users = [];
-    static initialized = false;
+    static #users = [];             // Private static variable.
+    static #initialized = false;    // Private static variable.
 
+    // Method for initializing the UserController by loading users from a JSON file.
     static async initialize() {
-        if (UserController.initialized) return;
+        if (UserController.#initialized) return;
 
         try {
             const data = await fs.readFile(filePath, "utf-8");
-            UserController.users = JSON.parse(data);
+            UserController.#users = JSON.parse(data);
         } catch (error) {
             console.error("Error loading users:", error);
-            UserController.users = [];
+            UserController.#users = [];
         }
 
-        UserController.initialized = true;
+        UserController.#initialized = true;
     }
 
+    // Method for saving current users to JSON file.
     static async saveUsers() {
-        await fs.writeFile(filePath, JSON.stringify(UserController.users, null, 2), "utf-8");
+        await fs.writeFile(filePath, JSON.stringify(UserController.#users, null, 2), "utf-8");
     }
 
+    // Find the individual user by their username.
     static findUserByUsername(username) {
-        return UserController.users.find(user => user.username === username);
+        return UserController.#users.find(user => user.username === username);
     }
 
+    // Validate the by comparing the provided password with stored hashed password.
     static async validateUser(username, password) {
         const user = UserController.findUserByUsername(username);
 
@@ -49,6 +52,7 @@ export class UserController {
         return await comparePasswords(password, user.password);
     }
 
+    // Handle user login by validating credentials and managing session state.
     static async login(request, response) {
         try {
             const { username, password } = request.body;
@@ -67,6 +71,7 @@ export class UserController {
         }
     }
 
+    // Handle user registration by validating input, hashing the password, and storing the new user.
     static async register(request, response) {
         try {
             const { username, password, repeat, first_name, last_name, level } = request.body;
@@ -91,7 +96,7 @@ export class UserController {
                 level
             );
 
-            UserController.users.push(newUser);
+            UserController.#users.push(newUser);
             await UserController.saveUsers();
 
             return response.redirect("/user/success");
