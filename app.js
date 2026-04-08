@@ -5,6 +5,8 @@
 import express, { request, response } from "express"
 import session from "express-session"
 
+import { UserController } from "./controllers/user_controller.js"
+
 import userRouter from "./routes/userRoute.js"
 import chatRouter from "./routes/chatRoute.js"
 import messageRouter from "./routes/messageRoute.js"
@@ -35,13 +37,19 @@ app.use(express.urlencoded())       // Middleware to properly receive and parse 
 app.use(express.json())             // Middleware to properly receive and parse JSON-formatted data.
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// LOAD CONTROLLERS
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+await UserController.initialize();
+
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // EXPRESS ROUTES
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 // Default route => Check if user is currently stored in Session.
 app.get('/', (request, response) => {
     if (request.session.isValidUser) {
-        response.render("home", { username: request.session.username })
+        response.render("home", { user: request.session.user });
     } else {
         response.redirect("/user/login")
     }
@@ -54,7 +62,7 @@ app.use('/messages', messageRouter);
 
 // Catch ALL incorrect endpoint requests.
 app.use((request, response, next) => {
-    response.status(404).send("404 - Could not find anything!")
+    response.render("404")
 })
 
 // App configuration

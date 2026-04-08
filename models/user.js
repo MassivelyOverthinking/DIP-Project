@@ -14,4 +14,8 @@ export class User {
         this.id = User.id++;
     }
     static id = 0;
+
+    async setLevel(level) {
+        this.level = level;
+    }
 }

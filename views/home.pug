@@ -1,0 +1,47 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet", href="/style_homepage.css")
+        title Home Page
+    body
+        main.home-page
+            section.home-card
+                .home-header
+                    h1 User: #{user.firstName} #{user.lastName}
+                    p @#{user.username}
+
+                if user.level === "3"
+                    p.role-text You are an admin user.
+                else if user.level === "2"
+                    p.role-text You are a moderator user.
+                else
+                    p.role-text You are a regular user.
+
+                .home-actions
+                    a(href="/chat/create")
+                        button.secondary-btn(type="button")
+                            strong Create Chatroom
+                    if user.level === "3"
+                        a(href="/admin")
+                            button.secondary-btn(type="button")
+                                strong Manage
+                    a(href="/user/logout")
+                        button.secondary-btn(type="button")
+                            strong Log out
+
+                .chat-section
+                    h2 Your Chatrooms
+
+                    if user.chats && user.chats.length > 0
+                        .chat-list
+                            each chat in user.chats
+                                .chat-card
+                                    .chat-card-content
+                                        h3.chat-title= chat.name
+                                        p.chat-date Created on #{chat.date}
+                                    button.chat-action(type="button") Open
+                    else
+                        .empty-state
+                            p You are not part of any chatrooms yet.

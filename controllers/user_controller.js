@@ -2,8 +2,9 @@
 // IMPORTS & MODULES
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-import { validateUser, checkUser, hashPassword, loadAndSaveUser } from "../utility/utils.js";
+import { hashPassword, comparePasswords } from "../utility/utils.js";
 import { User } from "../models/user.js";
+import fs from "fs/promises"
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // USER CONTROLLER FUNCTIONS
@@ -11,44 +12,97 @@ import { User } from "../models/user.js";
 
 const filePath = "./data/users.json"    // Internal file-path
 
-export async function login(request, response) {
-    try {
-        const { username, password } = request.body;
-        const isValidUser = await validateUser(username, password);
+export class UserController {
+    static #users = [];             // Private static variable.
+    static #initialized = false;    // Private static variable.
 
-        if (isValidUser) {
-            request.session.isValidUser = true;
-            request.session.username = username;
-            response.redirect('/home');
-        } else {
-            response.render('noAccess');
+    // Method for initializing the UserController by loading users from a JSON file.
+    static async initialize() {
+        if (UserController.#initialized) return;
+
+        try {
+            const data = await fs.readFile(filePath, "utf-8");
+            UserController.#users = JSON.parse(data);
+        } catch (error) {
+            console.error("Error loading users:", error);
+            UserController.#users = [];
         }
-    } catch (error) {
-        console.error("Error during login:", error);
-        response.status(500).send("Internal Server Error");
+
+        UserController.#initialized = true;
     }
-}
 
-export async function createUser(request, response) {
-    try {
-        const { username, password, first_name, last_name, level } = request.body;
-        
-        const userExists = await checkUser(username, filePath);
+    // Method for saving current users to JSON file.
+    static async saveUsers() {
+        await fs.writeFile(filePath, JSON.stringify(UserController.#users, null, 2), "utf-8");
+    }
 
-        if (!userExists) {
-            return response.status(400).send("User already exists");
+    // Find the individual user by their username.
+    static findUserByUsername(username) {
+        return UserController.#users.find(user => user.username === username);
+    }
+
+    // Validate the by comparing the provided password with stored hashed password.
+    static async validateUser(username, password) {
+        const user = UserController.findUserByUsername(username);
+
+        if (!user) {
+            return false;
         }
 
-        const hashedPassword = await hashPassword(password);
-        const date = new Date();
+        return await comparePasswords(password, user.password);
+    }
 
-        const newUser = new User(username, hashedPassword, first_name, last_name, date, level);
+    // Handle user login by validating credentials and managing session state.
+    static async login(request, response) {
+        try {
+            const { username, password } = request.body;
+            const isValidUser = await UserController.validateUser(username, password);
 
-        await loadAndSaveUser(newUser, filePath);
+            if (isValidUser) {
+                request.session.isValidUser = true;
+                request.session.user = UserController.findUserByUsername(username);
+                return response.render("home", { user: request.session.user });
+            }
 
-        response.redirect('/login');
-    } catch (error) {
-        console.error("Error during user registration:", error);
-        response.status(500).send("Internal Server Error");
+            return response.redirect(`/user/no-access`);
+        } catch (error) {
+            console.error("Error during login:", error);
+            return response.status(500).send("Internal Server Error");
+        }
+    }
+
+    // Handle user registration by validating input, hashing the password, and storing the new user.
+    static async register(request, response) {
+        try {
+            const { username, password, repeat, first_name, last_name, level } = request.body;
+
+            if (UserController.findUserByUsername(username)) {
+                return response.status(400).send("User already exists");
+            }
+
+            if (password !== repeat) {
+                return response.status(400).send("Passwords do not match");
+            }
+
+            const hashedPassword = await hashPassword(password);
+            const date = new Date();
+
+            const newUser = new User(
+                username,
+                hashedPassword,
+                first_name,
+                last_name,
+                date,
+                level
+            );
+
+            UserController.#users.push(newUser);
+            await UserController.saveUsers();
+
+            return response.redirect("/user/success");
+        } catch (error) {
+            console.error("Error during user registration:", error);
+            return response.status(500).send("Internal Server Error");
+        }
     }
 }
