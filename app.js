@@ -62,7 +62,7 @@ app.use('/messages', messageRouter);
 
 // Catch ALL incorrect endpoint requests.
 app.use((request, response, next) => {
-    response.status(404).send("404 - Could not find anything!")
+    response.render("404")
 })
 
 // App configuration

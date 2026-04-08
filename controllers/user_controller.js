@@ -2,7 +2,7 @@
 // IMPORTS & MODULES
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-import { validateUser, checkUser, hashPassword, loadAndSaveUser } from "../utility/utils.js";
+import { hashPassword, comparePasswords } from "../utility/utils.js";
 import { User } from "../models/user.js";
 import bcrypt from "bcrypt"
 import fs from "fs/promises"
@@ -46,7 +46,7 @@ export class UserController {
             return false;
         }
 
-        return await bcrypt.compare(password, user.password);
+        return await comparePasswords(password, user.password);
     }
 
     static async login(request, response) {
