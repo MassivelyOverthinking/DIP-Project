@@ -7,5 +7,6 @@ export default class User {
         this.chats = [];
         this.id = User.id++;
     }
+
     static id = 0;
 }
