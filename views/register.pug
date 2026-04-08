@@ -1,21 +1,33 @@
 doctype html
-html
+html(lang="en")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         link(rel="stylesheet", href="/style_login.css")
         title Register
     body
-        #register
-            form(action="/user/register", method="post") 
-                input(type="text", name="username", placeholder="Username")
-                input(type="text", name="first_name", placeholder="First name")
-                input(type="text", name="last_name", placeholder="Last name")
-                input(type="password", name="password", placeholder="Password")
-                input(type="password", name="repeat", placeholder="Repeat Password")
-                button(type="submit")
-                    strong Create User
+        main.auth-page
+            section.auth-card
+                .auth-header
+                    h1 Create account
+                    p Join and get started in a few seconds
 
-            p 
-                | Already have an account? 
-                a(href="/user/login") Sign in here!
+                form.auth-form(action="/user/register", method="post")
+                    input(type="text", name="username", placeholder="Username", required)
+                    input(type="text", name="first_name", placeholder="First name", required)
+                    input(type="text", name="last_name", placeholder="Last name", required)
+                    input(type="password", name="password", placeholder="Password", required)
+                    input(type="password", name="repeat", placeholder="Repeat Password", required)
+
+                    select.dropdown
+                        option(value="0") Select a role
+                        option(value="1") User
+                        option(value="2") Manager
+                        option(value="3") Admin
+
+                    button(type="submit")
+                        strong Create User
+
+                    p.footer
+                        | Already have an account?
+                        a(href="/user/login") Sign in here
