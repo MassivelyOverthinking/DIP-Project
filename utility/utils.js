@@ -1,4 +1,11 @@
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// IMPORTS & MODULES
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+import bcrypt from "bcrypt"
+import fs from "fs/promises"
+
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // UTILITY FUNCTIONS
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
@@ -45,7 +52,7 @@ export async function loadUsers(filepath) {
 }
 
 // Save all users in memmory to persistent storage on Disk.
-export async function saveUser(filepath,users) {
+export async function saveUser(filepath, users) {
     // write to file using JSON data.
     try {
         await fs.writeFile(filepath, JSON.stringify(users), "utf8")

@@ -3,7 +3,7 @@
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 import express from 'express';
-import { login, createUser } from '../controllers/user_controller.js';
+import { UserController } from '../controllers/user_controller.js';
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // USER ROUTE
@@ -20,8 +20,12 @@ router.get('/register', (request, response) => {
     response.render('register');
 });
 
+router.get("/no-access", (request, response) => {
+    response.render("error");
+});
+
 // POST-routes for handling the form data.
-router.post('/login', login);
-router.post('/register', createUser);
+router.post('/login', UserController.login);
+router.post('/register', UserController.register);
 
 export default router;

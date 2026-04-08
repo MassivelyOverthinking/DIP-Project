@@ -4,6 +4,8 @@
 
 import { validateUser, checkUser, hashPassword, loadAndSaveUser } from "../utility/utils.js";
 import { User } from "../models/user.js";
+import bcrypt from "bcrypt"
+import fs from "fs/promises"
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // USER CONTROLLER FUNCTIONS
@@ -11,44 +13,91 @@ import { User } from "../models/user.js";
 
 const filePath = "./data/users.json"    // Internal file-path
 
-export async function login(request, response) {
-    try {
-        const { username, password } = request.body;
-        const isValidUser = await validateUser(username, password);
+export class UserController {
+    static users = [];
+    static initialized = false;
 
-        if (isValidUser) {
-            request.session.isValidUser = true;
-            request.session.username = username;
-            response.redirect('/home');
-        } else {
-            response.render('noAccess');
+    static async initialize() {
+        if (UserController.initialized) return;
+
+        try {
+            const data = await fs.readFile(filePath, "utf-8");
+            UserController.users = JSON.parse(data);
+        } catch (error) {
+            console.error("Error loading users:", error);
+            UserController.users = [];
         }
-    } catch (error) {
-        console.error("Error during login:", error);
-        response.status(500).send("Internal Server Error");
+
+        UserController.initialized = true;
     }
-}
 
-export async function createUser(request, response) {
-    try {
-        const { username, password, first_name, last_name, level } = request.body;
-        
-        const userExists = await checkUser(username, filePath);
+    static async saveUsers() {
+        await fs.writeFile(filePath, JSON.stringify(UserController.users, null, 2), "utf-8");
+    }
 
-        if (!userExists) {
-            return response.status(400).send("User already exists");
+    static findUserByUsername(username) {
+        return UserController.users.find(user => user.username === username);
+    }
+
+    static async validateUser(username, password) {
+        const user = UserController.findUserByUsername(username);
+
+        if (!user) {
+            return false;
         }
 
-        const hashedPassword = await hashPassword(password);
-        const date = new Date();
+        return await bcrypt.compare(password, user.password);
+    }
 
-        const newUser = new User(username, hashedPassword, first_name, last_name, date, level);
+    static async login(request, response) {
+        try {
+            const { username, password } = request.body;
+            const isValidUser = await UserController.validateUser(username, password);
 
-        await loadAndSaveUser(newUser, filePath);
+            if (isValidUser) {
+                request.session.isValidUser = true;
+                request.session.username = username;
+                return response.send(`User successfully logged in: ${username}`);
+            }
 
-        response.redirect('/login');
-    } catch (error) {
-        console.error("Error during user registration:", error);
-        response.status(500).send("Internal Server Error");
+            return response.redirect(`/user/no-access`);
+        } catch (error) {
+            console.error("Error during login:", error);
+            return response.status(500).send("Internal Server Error");
+        }
+    }
+
+    static async register(request, response) {
+        try {
+            const { username, password, repeat, first_name, last_name, level } = request.body;
+
+            if (UserController.findUserByUsername(username)) {
+                return response.status(400).send("User already exists");
+            }
+
+            if (password !== repeat) {
+                return response.status(400).send("Passwords do not match");
+            }
+
+            const hashedPassword = await hashPassword(password);
+            const date = new Date();
+
+            const newUser = new User(
+                username,
+                hashedPassword,
+                first_name,
+                last_name,
+                date,
+                level
+            );
+
+            UserController.users.push(newUser);
+            await UserController.saveUsers();
+
+            return response.send(`User created successfully: ${username}`);
+        } catch (error) {
+            console.error("Error during user registration:", error);
+            return response.status(500).send("Internal Server Error");
+        }
     }
 }
