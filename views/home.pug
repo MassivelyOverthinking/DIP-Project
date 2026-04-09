@@ -1,10 +1,7 @@
 doctype html
 html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        link(rel="stylesheet", href="/style_homepage.css")
-        title Home Page
+    include head.pug
+    +headpage('Home Page', '/style_home.css')
     body
         include chatCard.pug
 

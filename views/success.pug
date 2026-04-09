@@ -1,9 +1,6 @@
 html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        link(rel="stylesheet", href="/style_login.css")
-        title User Created
+    include head.pug
+    +headpage('Success', '/style_login.css')
     body 
         main.auth-page
             section.auth-card
