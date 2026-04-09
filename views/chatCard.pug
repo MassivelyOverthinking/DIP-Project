@@ -1,4 +1,4 @@
-mixin chatCard(chat)
+mixin chatCard(chat, userLevel)
     .chat-card(data-id=chat.id)
         .chat-card-content
             .chat-card-header
@@ -11,4 +11,5 @@ mixin chatCard(chat)
 
         .chat-actions
             button.action-btn(type="button") Open
-            button.action-btn(type="button") Delete
+            if userLevel === "3"
+                button.action-btn(type="button") Delete

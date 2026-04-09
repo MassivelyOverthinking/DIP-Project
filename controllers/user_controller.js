@@ -128,11 +128,11 @@ export class UserController {
             const { username, password, repeat, first_name, last_name, level } = request.body;
 
             if (UserController.findUserByUsername(username)) {
-                return response.status(400).send("User already exists");
+                return response.redirect(`/user/no-access/username-taken`);
             }
 
             if (password !== repeat) {
-                return response.status(400).send("Passwords do not match");
+                return response.redirect(`/user/no-access/passwords-dont-match`);
             }
 
             const hashedPassword = await hashPassword(password);

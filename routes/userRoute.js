@@ -3,6 +3,7 @@
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 import express from 'express';
+import { getErrorMessage } from '../utility/utils.js';
 import { UserController } from '../controllers/user_controller.js';
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -20,8 +21,13 @@ router.get("/register", (request, response) => {
     response.render("register");
 });
 
-router.get("/no-access", (request, response) => {
-    response.render("error");
+router.get("/no-access/:type", (request, response) => {
+    const { type } = request.params;
+    const errorMessage = getErrorMessage(type);
+    
+    response.render("error", { 
+        error: errorMessage
+    });
 });
 
 router.get("/success", (request, response) => {
