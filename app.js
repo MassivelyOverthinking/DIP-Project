@@ -49,13 +49,18 @@ await ChatController.startup();
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 // Default route => Check if user is currently stored in Session.
-app.get('/', (request, response) => {
-    if (request.session.isValidUser) {
-        response.render("home", { user: request.session.user });
-    } else {
-        response.redirect("/user/login")
+app.get('/', async (request, response) => {
+    if (!request.session.user) {
+        return response.redirect("/user/login");
     }
-})
+
+    console.log("Chats sent to home:", ChatController.getChats());
+
+    response.render("home", {
+        user: request.session.user,
+        chats: ChatController.getChats(),
+    });
+});
 
 // User, Chat and Message routes.
 app.use('/user', userRouter);

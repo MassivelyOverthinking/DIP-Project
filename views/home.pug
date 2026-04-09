@@ -34,8 +34,8 @@ html(lang="en")
                 .chat-section
                     h2 Your Chatrooms
 
-                    if user.chats && user.chats.length > 0
-                            each chat in user.chats
+                    if chats && chats.length > 0
+                            each chat in chats
                                 +chatCard(chat)
                     else
                         .empty-state

@@ -36,7 +36,7 @@ export class UserController {
         UserController.#initialized = true;
     }
 
-    static async setUserID() {
+    static setUserID() {
         const maxId = UserController.#users.reduce((max, user) => {
             return user.id > max ? user.id : max;
         }, -1);
@@ -91,7 +91,7 @@ export class UserController {
             if (isValidUser) {
                 request.session.isValidUser = true;
                 request.session.user = UserController.findUserByUsername(username);
-                return response.render("home", { user: request.session.user });
+                return response.redirect("/");
             }
 
             return response.redirect(`/user/no-access`);

@@ -10,5 +10,5 @@ export class Message {
         this.chatID = chatID;
         this.id = Message.id++;
     }
-    static id = 0;
+    static id = 1;
 }

@@ -20,7 +20,9 @@ export class ChatController {
 
         try {
             const data = await fs.readFile(filePath, "utf-8");
-            ChatController.#chats = JSON.parse(data);
+            const JSONdata = JSON.parse(data);
+
+            ChatController.#chats = JSONdata.map(chat => Chat.fromJSON(chat));
 
             const newId = ChatController.setChatID();
             
@@ -33,7 +35,7 @@ export class ChatController {
         ChatController.#initialized = true;
     }
 
-    static async setChatID() {
+    static setChatID() {
         const maxId = ChatController.#chats.reduce((max, chat) => {
             return chat.id > max ? chat.id : max;
         }, -1);
@@ -43,6 +45,10 @@ export class ChatController {
 
     static async saveChats() {
         await fs.writeFile(filePath, JSON.stringify(ChatController.#chats, null, 2));
+    }
+
+    static getChats() {
+        return ChatController.#chats;
     }
 
     static findById(id) {
@@ -65,6 +71,7 @@ export class ChatController {
             if (!req.session.user) {
                  return res.status(401).send("Log ind") 
             };
+            
             if (req.session.user.level < 2) {
                 return res.status(403).send("Ingen rettigheder");
             }
@@ -78,9 +85,9 @@ export class ChatController {
             ChatController.#chats.push(newChat);
             await ChatController.saveChats();
 
-            return res.render("home", {
-                user: req.session.user
-            });
+            req.session.chats = ChatController.#chats;
+
+            return res.redirect("/");
         } catch (error) {
             console.error("Error creating chat:", error);
             res.status(500).send("Fejl ved oprettelse af chat");

@@ -14,7 +14,8 @@ const router = express.Router();
 // GET-routes for rendering the webpages.
 router.get("/home", (request, response) => {
     response.render("home", {
-        user: request.session.user 
+        user: request.session.user,
+        chats: request.session.chats,
     });
 });
 

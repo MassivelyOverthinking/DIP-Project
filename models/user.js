@@ -13,7 +13,7 @@ export class User {
         this.chats = [];
         this.id = User.id++;
     }
-    static id = 0;
+    static id = 1;
 
     async setLevel(level) {
         this.level = level;

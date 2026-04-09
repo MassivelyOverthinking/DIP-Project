@@ -9,5 +9,13 @@ export class Chat {
         this.messages = [];
         this.id = Chat.id++;
     }
-    static id = 0;
+    static id = 1;
+
+    static fromJSON(json) {
+        const chat = new Chat(json.name, json.date, json.owner);
+        chat.messages = json.messages ?? [];
+        chat.id = json.id;
+        
+        return chat;
+    }
 }
