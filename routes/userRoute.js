@@ -28,6 +28,12 @@ router.get("/success", (request, response) => {
     response.render("success");
 });
 
+router.get("/admin", (request, response) => {
+    response.render("admin", {
+        users: UserController.getAllUsers(),
+    });
+});
+
 router.get("/logout", (request, response) => {
     request.session.destroy();
     response.redirect("/user/login");

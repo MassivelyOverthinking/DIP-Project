@@ -1,0 +1,27 @@
+doctype html
+html(lang="en")
+    include head.pug
+    include userCard.pug
+    +headpage("Admin Dashboard", "/style_homepage.css")
+    body
+        main.home-page
+            section.home-card
+                .home-header
+                    h1 Admin Panel
+                    p Manage all users
+
+                .home-actions
+                    a(href="/")
+                        button.secondary-btn(type="button")
+                            strong Back to Home
+
+                .chat-section
+                    h2 Users
+
+                    if users && users.length > 0
+                        .chat-list
+                            each user in users
+                                +userCard(user)
+                    else
+                        .empty-state
+                            p No users found.

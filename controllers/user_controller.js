@@ -22,7 +22,9 @@ export class UserController {
 
         try {
             const data = await fs.readFile(filePath, "utf-8");
-            UserController.#users = JSON.parse(data);
+            const usersData = JSON.parse(data);
+
+            UserController.#users = usersData.map(user => User.fromJSON(user));
 
             const newId = UserController.setUserID();
 
@@ -46,7 +48,7 @@ export class UserController {
 
     // Method for saving current users to JSON file.
     static async saveUsers() {
-        await fs.writeFile(filePath, JSON.stringify(UserController.#users, null, 2), "utf-8");
+        await fs.writeFile(filePath, JSON.stringify(UserController.#users), "utf-8");
     }
 
     // Find the individual user by their username.

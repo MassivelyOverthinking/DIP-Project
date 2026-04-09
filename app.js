@@ -54,8 +54,6 @@ app.get('/', (request, response) => {
         return response.redirect("/user/login");
     }
 
-    console.log("Chats sent to home:", ChatController.getChats());
-
     response.render("home", {
         user: request.session.user,
         chats: ChatController.getChats(),

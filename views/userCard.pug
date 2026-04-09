@@ -1,0 +1,17 @@
+mixin userCard(user)
+    .chat-card(data-id=user.id)
+        .chat-card-content
+            .chat-card-header
+                h3.chat-title #{user.firstName} #{user.lastName}
+                span.chat-date @#{user.username}
+
+            .chat-meta
+                span.owner User ID: #{user.id}
+                span.count Role level: #{user.level}
+
+        .chat-actions
+            form(action=`/user/change-role/${user.id}`, method="post")
+                button.action-btn(type="submit") Change Role
+
+            form(action=`/user/delete/${user.id}`, method="post")
+                button.action-btn(type="submit") Delete

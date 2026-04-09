@@ -87,6 +87,22 @@ body {
     background: greenyellow;
 }
 
+button {
+    margin-top: 8px;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    background: rgba(214, 252, 2, 0.8);
+    color: black;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+    background: greenyellow;
+}
+
 .auth-form select {
     width: 100%;
     padding: 14px 16px;

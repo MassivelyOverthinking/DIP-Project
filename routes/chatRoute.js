@@ -4,6 +4,7 @@
 
 import express from 'express';
 import { ChatController } from '../controllers/chat_controller.js';
+import { UserController } from '../controllers/user_controller.js';
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // CHAT ROUTE

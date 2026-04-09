@@ -15,6 +15,13 @@ export class User {
     }
     static id = 1;
 
+    static fromJSON(json) {
+        const user = new User(json.username, json.password, json.firstName, json.lastName, json.date, json.level);
+        user.chats = json.chats || [];
+        user.id = json.id;
+        return user;
+    }
+
     async setLevel(level) {
         this.level = level;
     }
