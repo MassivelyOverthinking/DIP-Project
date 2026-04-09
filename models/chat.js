@@ -2,6 +2,8 @@
 // MODEL: CHAT-CLASS
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 export class Chat {
+    static id = 1;
+    
     constructor(name, date, owner, participant) {
         this.name = name;
         this.date = date;
@@ -10,7 +12,6 @@ export class Chat {
         this.messages = [];
         this.id = Chat.id++;
     }
-    static id = 1;
 
     static fromJSON(json) {
         const chat = new Chat(json.name, json.date, json.owner, json.participant);
@@ -18,5 +19,9 @@ export class Chat {
         chat.id = json.id;
         
         return chat;
+    }
+
+    async addMessage(messageID) {
+        this.messages.push(messageID);
     }
 }
