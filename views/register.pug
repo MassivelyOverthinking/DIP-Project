@@ -1,6 +1,7 @@
 doctype html
 html(lang="en")
-    include head.pug
+    include templates/head.pug
+    include templates/formButton.pug
     +headpage('Register Page', '/style_login.css')
     body
         main.auth-page
@@ -22,8 +23,7 @@ html(lang="en")
                         option(value="2") Manager
                         option(value="3") Admin
 
-                    button(type="submit")
-                        strong Create User
+                    +form-button("Create Account")
 
                     p.footer
                         | Already have an account?

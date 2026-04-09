@@ -1,6 +1,7 @@
 doctype html
 html(lang="en")
-    include head.pug
+    include templates/head.pug
+    include templates/formButton.pug
     +headpage('Create Chatroom', '/style_login.css')
     body
         main.auth-page
@@ -13,8 +14,7 @@ html(lang="en")
                     input(type="text", name="name", placeholder="Chatroom Name", required)
                     input(type="number", name="id", placeholder="User ID", required)
 
-                    button(type="submit")
-                        strong Create Chatroom
+                    +form-button("Create")
 
                 button(type="button") 
                     a(href="/") Return

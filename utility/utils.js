@@ -16,6 +16,8 @@ export function getErrorMessage(type) {
             return "Username is already taken.";
         case "passwords-dont-match":
             return "Passwords do not match.";
+        case "404":
+            return "The page you are looking for does not exist.";
         default:
             return "An unknown error occurred.";
     }
