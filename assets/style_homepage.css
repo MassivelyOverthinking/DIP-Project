@@ -67,7 +67,8 @@ body {
 }
 
 .primary-btn,
-.secondary-btn {
+.secondary-btn,
+.action-btn {
     border: none;
     border-radius: 12px;
     padding: 14px 18px;
@@ -79,7 +80,8 @@ body {
 }
 
 .primary-btn:hover,
-.secondary-btn:hover {
+.secondary-btn:hover,
+.action-btn:hover {
     background: greenyellow;
 }
 
@@ -145,6 +147,11 @@ body {
 .chat-action:hover {
     background: greenyellow;
     transform: translateY(-1px);
+}
+
+.chat-actions {
+    display: flex;
+    gap: 8px; /* adjust spacing here */
 }
 
 .empty-state {

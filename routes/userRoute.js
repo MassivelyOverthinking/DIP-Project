@@ -34,7 +34,8 @@ router.get("/logout", (request, response) => {
 });
 
 // POST-routes for handling the form data.
-router.post('/login', UserController.login);
-router.post('/register', UserController.register);
+router.post("/login", UserController.login);
+router.post("/register", UserController.register);
+router.post("/update", UserController.updateUserChat);
 
 export default router;
