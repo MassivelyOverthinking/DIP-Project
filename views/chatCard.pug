@@ -10,8 +10,9 @@ html(lang="en")
                         span.chat-date= chat.date
 
                     .chat-meta
-                        span.chat-owner Created by #{chat.owner}
-                        span.chat-count #{chat.messages.length} messages
+                        span.owner Created by #{chat.owner}
+                        span.count #{chat.messages.length} messages
 
-                button.chat-action(type="button")
-                | Open
+                .chat-actions
+                    button.action(type="button") Open
+                    button.action(type="button") Delete

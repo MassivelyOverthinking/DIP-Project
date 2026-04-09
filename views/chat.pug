@@ -14,9 +14,10 @@ html(lang="en")
 
                 form.auth-form(action="/chat/create", method="post")
                     input(type="text", name="name", placeholder="Chatroom Name", required)
+                    input(type="number", name="id", placeholder="User ID", required)
 
                     button(type="submit")
                         strong Create Chatroom
 
                 button(type="button") 
-                    a(href="/home") Back to Home
+                    a(href="/home") Return
