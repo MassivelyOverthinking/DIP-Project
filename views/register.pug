@@ -1,21 +1,29 @@
 doctype html
 html
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        link(rel="stylesheet", href="/style_login.css")
-        title Register
-    body
-        #register
-            form(action="/user/register", method="post") 
-                input(type="text", name="username", placeholder="Username")
-                input(type="text", name="first_name", placeholder="First name")
-                input(type="text", name="last_name", placeholder="Last name")
-                input(type="password", name="password", placeholder="Password")
-                input(type="password", name="repeat", placeholder="Repeat Password")
-                button(type="submit")
-                    strong Create User
-
-            p 
-                | Already have an account? 
-                a(href="/user/login") Sign in here!
+  head
+    title Register
+  body
+    h1 Opret ny bruger
+    form(action="/users/register", method="POST")
+      label(for="username") Brugernavn:
+      input(type="text", name="username", required)
+      br
+      label(for="password") Password:
+      input(type="password", name="password", required)
+      br
+      label(for="repeat") Gentag password:
+      input(type="password", name="repeat", required)
+      br
+      label(for="first_name") Fornavn:
+      input(type="text", name="first_name", required)
+      br
+      label(for="last_name") Efternavn:
+      input(type="text", name="last_name", required)
+      br
+      label(for="level") Niveau:
+      select(name="level")
+        option(value="1") 1
+        option(value="2") 2
+        option(value="3") 3
+      br
+      button(type="submit") Opret bruger

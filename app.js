@@ -1,27 +1,17 @@
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// IMPORTS & MODULES
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-import express, { request, response } from "express"
+import express from "express"
 import session from "express-session"
 
 import userRouter from "./routes/userRoute.js"
 import chatRouter from "./routes/chatRoute.js"
 import messageRouter from "./routes/messageRoute.js"
 
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// EXPRESS INITIALIZATION
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+const port = 8000
+const app = express()
 
-const port = 8000                       // Port number
-const app = express()                   // Express entry-point
-
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// MIDDLEWARE & VIEW ENGINE
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-// View Enginer => Setup
+// View engine
 app.set('view engine', 'pug')
+
+// Session
 app.use(session({
     secret: 'RandomTextString',
     saveUninitialized: true,
@@ -29,35 +19,30 @@ app.use(session({
 }))
 
 // Middleware
-app.use(express.json());            // Middleware to properly receive and parse JSON-formatted data.
-app.use(express.static('assets'))   // Middleware to properly utilise internal Assets-folder
-app.use(express.urlencoded())       // Middleware to properly receive and parse URL-formatted data.
-app.use(express.json())             // Middleware to properly receive and parse JSON-formatted data.
+app.use(express.json())
+app.use(express.static('assets'))
+app.use(express.urlencoded({ extended: true }))
 
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// EXPRESS ROUTES
-//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-// Default route => Check if user is currently stored in Session.
-app.get('/', (request, response) => {
-    if (request.session.isValidUser) {
-        response.render("home", { username: request.session.username })
+// Forside
+app.get('/', (req, res) => {
+    if (req.session.user) {
+        res.render("home", { user: req.session.user })
     } else {
-        response.redirect("/user/login")
+        res.redirect("/users/login")
     }
 })
 
-// User, Chat and Message routes.
-app.use('/user', userRouter);
-app.use('/chat', chatRouter);
-app.use('/messages', messageRouter);
+// Routes
+app.use('/users', userRouter)
+app.use('/chats', chatRouter)
+app.use('/messages',messageRouter)
 
-// Catch ALL incorrect endpoint requests.
-app.use((request, response, next) => {
-    response.status(404).send("404 - Could not find anything!")
+// 404
+app.use((req, res) => {
+    res.status(404).send("404 - Kan ikke finde noget!")
 })
 
-// App configuration
-app.listen(8000, () => {
-    console.log(`Chat project is now running on port: ${port} 🔥`)
+// Start
+app.listen(port, () => {
+    console.log(`Server kører på port: ${port}`)
 })

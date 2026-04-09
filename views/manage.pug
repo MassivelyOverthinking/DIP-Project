@@ -1,0 +1,50 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="/style.css")
+    title Manage Users
+    script.
+      // Funktion til at opdatere brugerniveau
+      async function updateLevel(userId, select) {
+        const newLevel = select.value;
+        const response = await fetch("/users/update-level", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ userId, newLevel })
+        });
+        if(response.ok) {
+          alert("Level updated");
+        } else {
+          alert("ERROR! TRY UDPATE AGAIN");
+        }
+      }
+  body
+    h1 Admin Panel - Manage Users
+    p Velkommen, #{user.username} (niveau #{user.level})
+
+    h2 Brugere
+    table(border="1")
+      tr
+        th Brugernavn
+        th Fornavn
+        th Efternavn
+        th Niveau
+        th Handling
+      each u in user.allUsers
+        tr
+          td #{u.username}
+          td #{u.firstName}
+          td #{u.lastName}
+          td
+            select(onchange=`updateLevel(${u.id}, this)`)
+              option(value="1", selected=u.level==1) 1
+              option(value="2", selected=u.level==2) 2
+              option(value="3", selected=u.level==3) 3
+          td Admin kan ændre niveau
+
+    br
+    a(href="/chats") Gå til chats
+    br
+    a(href="/user/logout") Log ud
