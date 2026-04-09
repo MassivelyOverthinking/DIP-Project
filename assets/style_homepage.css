@@ -121,12 +121,6 @@ button:active {
     text-align: center;
 }
 
-.chat-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
 .chat-card {
     display: flex;
     justify-content: space-between;
@@ -145,7 +139,7 @@ button:active {
 .chat-card-content {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
 }
 
 .chat-title {
@@ -157,24 +151,7 @@ button:active {
 
 .chat-date {
     color: rgba(255, 255, 255, 0.82);
-    font-size: 0.92rem;
-}
-
-.chat-action {
-    border: none;
-    border-radius: 10px;
-    padding: 10px 16px;
-    background: rgba(214, 252, 2, 0.8);
-    color: #000000;
-    cursor: pointer;
-    font-size: 0.95rem;
-    font-weight: 600;
-    transition: background 0.2s ease, transform 0.1s ease;
-}
-
-.chat-action:hover {
-    background: greenyellow;
-    transform: translateY(-1px);
+    font-size: 1rem;
 }
 
 .chat-actions {
@@ -183,7 +160,7 @@ button:active {
 }
 
 .empty-state {
-    border: 1.5px dashed rgba(214, 252, 2, 0.5);
+    border: 1.5px dashed #af40ff80;
     border-radius: 12px;
     padding: 28px 20px;
     text-align: center;
