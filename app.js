@@ -49,7 +49,7 @@ await ChatController.startup();
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 // Default route => Check if user is currently stored in Session.
-app.get('/', async (request, response) => {
+app.get('/', (request, response) => {
     if (!request.session.user) {
         return response.redirect("/user/login");
     }

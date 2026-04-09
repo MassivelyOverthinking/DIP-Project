@@ -1,18 +1,14 @@
-html(lang="en")
-    head
-        link(rel="stylesheet", href="/style_login.css")
-    body
-        mixin chatCard(chat)
-            .chat-card(data-id=chat.id)
-                .chat-card-content
-                    .chat-card-header
-                        h3.chat-title= chat.name
-                        span.chat-date= chat.date
+mixin chatCard(chat)
+    .chat-card(data-id=chat.id)
+        .chat-card-content
+            .chat-card-header
+                h3.chat-title= chat.name
+                span.chat-date= chat.date
 
-                    .chat-meta
-                        span.owner Created by chat.owner
-                        span.count #{chat.messages.length} messages
+            .chat-meta
+                span.owner Created by #{chat.owner}
+                span.count #{chat.messages ? chat.messages.length : 0} messages
 
-                .chat-actions
-                    button.action(type="button") Open
-                    button.action(type="button") Delete
+        .chat-actions
+            button.action-btn(type="button") Open
+            button.action-btn(type="button") Delete
