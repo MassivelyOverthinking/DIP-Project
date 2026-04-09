@@ -22,6 +22,10 @@ export class User {
         return user;
     }
 
+    async addChat(chatID) {
+        this.chats.push(chatID);
+    }
+
     async setLevel(level) {
         this.level = level;
     }

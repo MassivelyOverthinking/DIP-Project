@@ -10,6 +10,8 @@ mixin chatCard(chat, userLevel)
                 span.count #{chat.messages ? chat.messages.length : 0} messages
 
         .chat-actions
-            button.action-btn(type="button") Open
+            button(type="button") 
+                span.text Open
             if userLevel === "3"
-                button.action-btn(type="button") Delete
+                button.action-btn(type="button") 
+                    span.text Delete

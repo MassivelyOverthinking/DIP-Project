@@ -7,10 +7,14 @@ import { User } from "../models/user.js";
 import fs from "fs/promises"
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// USER CONTROLLER FUNCTIONS
+// CONSTANTS
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 const filePath = "./data/users.json"    // Internal file-path
+
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// CONTROLLER: USER CONTROLLER
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 export class UserController {
     static #users = [];             // Private static variable.
@@ -38,6 +42,10 @@ export class UserController {
         UserController.#initialized = true;
     }
 
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    // CONTROLLER: HELPER METHODS
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
     static setUserID() {
         const maxId = UserController.#users.reduce((max, user) => {
             return user.id > max ? user.id : max;
@@ -51,14 +59,26 @@ export class UserController {
         await fs.writeFile(filePath, JSON.stringify(UserController.#users), "utf-8");
     }
 
+    static getAllUsers() {
+        return UserController.#users;
+    }
+
+    // Find the individual user by their ID.
+    static getUserByID(id) {
+        return UserController.#users.find(user => user.id === id);
+    }
+
     // Find the individual user by their username.
     static findUserByUsername(username) {
         return UserController.#users.find(user => user.username === username);
     }
 
-    // Find the individual user by their ID.
-    static async getUserByID(id) {
-        return UserController.#users.find(user => user.id === id);
+    static async updateUserChat(id, chat) {
+        const user = UserController.getUserByID(id);
+        if (user) {
+            user.chats.push(chat);
+            await UserController.saveUsers();
+        }
     }
 
     // Validate the user by comparing the provided password with stored hashed password.
@@ -72,9 +92,9 @@ export class UserController {
         return await comparePasswords(password, user.password);
     }
 
-    static getAllUsers() {
-        return UserController.#users;
-    }
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    // CONTROLLER: REQUEST HANDLERS
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     static async updateUserLevel(request, response) {
         const { id, level } = request.params;
@@ -86,14 +106,6 @@ export class UserController {
         }
 
         response.redirect("/");
-    }
-
-    static async updateUserChat(id, chat) {
-        const user = UserController.getUserByID(id);
-        if (user) {
-            user.chats.push(chat);
-            await UserController.saveUsers();
-        }
     }
 
     static async deleteUser(request, response) {

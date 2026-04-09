@@ -2,12 +2,13 @@
 // IMPORTS & MODULES
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
+import { Chat } from "../models/chat.js";
+import { UserController } from "./user_controller.js";
+import fs from "fs/promises";
+
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // CHAT CONTROLLER FUNCTIONS
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-import { Chat } from "../models/chat.js";
-import fs from "fs/promises";
 
 const filePath = "./data/chats.json";
 
@@ -76,11 +77,30 @@ export class ChatController {
                 return res.status(403).send("Ingen rettigheder");
             }
 
+            const owner = UserController.getUserByID(req.session.user.id);
+            const participantId = parseInt(req.body.participant);
+            const participant = UserController.getUserByID(participantId);
+
+            if (!owner) {
+                return res.status(404).render("error", {
+                    error: "Ejer ikke fundet"
+                });
+            }
+
+            if (!participant) {
+                return res.status(400).send("Deltager ikke fundet");
+            }
+            
             const newChat = new Chat(
                 req.body.name,
                 new Date(),
-                req.session.user.id
+                owner.id,
+                participant.id
             );
+
+            owner.addChat(newChat.id);
+            participant.addChat(newChat.id);
+            await UserController.saveUsers();
 
             ChatController.#chats.push(newChat);
             await ChatController.saveChats();

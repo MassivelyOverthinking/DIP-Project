@@ -3,7 +3,6 @@
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 import bcrypt from "bcrypt"
-import fs from "fs/promises"
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // UTILITY FUNCTIONS
@@ -23,12 +22,12 @@ export function getErrorMessage(type) {
     }
 }
 
-// Utilise Bcrypt library to quickly compare hashed password with stored version.
+// Utilise Bcrypt library to hash a password.
 export async function hashPassword(password) {
     return await bcrypt.hash(password, 10)
 }
 
-// Utilise Bcrypt library to quickly compare hashed password with stored version.
+// Utilise Bcrypt library to compare hashed password.
 export async function comparePasswords(password, hash) {
     return await bcrypt.compare(password, hash)
 }

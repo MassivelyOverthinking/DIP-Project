@@ -12,7 +12,7 @@ html(lang="en")
 
                 form.auth-form(action="/chat/create", method="post")
                     input(type="text", name="name", placeholder="Chatroom Name", required)
-                    input(type="number", name="id", placeholder="User ID", required)
+                    input(type="number", name="participant", placeholder="User ID", required)
 
                     +form-button("Create")
 

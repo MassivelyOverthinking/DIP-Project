@@ -1,15 +1,17 @@
 [
   {
     "name": "The Boys",
-    "date": "2026-04-09T10:23:52.241Z",
+    "date": "2026-04-09T18:48:19.674Z",
     "owner": 0,
+    "participant": 1,
     "messages": [],
     "id": 0
   },
   {
-    "name": "Random Talks",
-    "date": "2026-04-09T12:01:17.623Z",
+    "name": "The Boys",
+    "date": "2026-04-09T19:00:28.709Z",
     "owner": 0,
+    "participant": 1,
     "messages": [],
     "id": 1
   }
