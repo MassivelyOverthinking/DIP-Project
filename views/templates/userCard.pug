@@ -6,12 +6,12 @@ mixin userCard(user)
                 span.chat-date @#{user.username}
 
             .chat-meta
-                span.owner User ID: #{user.id}
-                span.count Role level: #{user.level}
+                span.owner User ID: ${user.id}
+                span.count Role level: ${user.level}
 
         .chat-actions
-            form(action=`/user/change-role/${user.id}`, method="post")
-                button(type="submit") 
+            form(action=`/user/change-role/${user.id}`, method="get")
+                button(type="submit")
                     span.text Change Role
 
             form(

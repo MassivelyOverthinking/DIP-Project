@@ -97,8 +97,10 @@ export class UserController {
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     static async updateUserLevel(request, response) {
-        const { id, level } = request.params;
+        const { id, level } = request.body;
         const user = await UserController.getUserByID(parseInt(id));
+
+        console.log("ID:", id, "Level:", level);
 
         if (user) {
             user.setLevel(level);
