@@ -17,18 +17,31 @@ export class UserController {
     static #initialized = false;    // Private static variable.
 
     // Method for initializing the UserController by loading users from a JSON file.
-    static async initialize() {
+    static async startup() {
         if (UserController.#initialized) return;
 
         try {
             const data = await fs.readFile(filePath, "utf-8");
             UserController.#users = JSON.parse(data);
+
+            const newId = UserController.setUserID();
+
+            User.id = newId + 1;
         } catch (error) {
             console.error("Error loading users:", error);
             UserController.#users = [];
+            User.id = 0;
         }
 
         UserController.#initialized = true;
+    }
+
+    static async setUserID() {
+        const maxId = UserController.#users.reduce((max, user) => {
+            return user.id > max ? user.id : max;
+        }, -1);
+
+        return maxId;
     }
 
     // Method for saving current users to JSON file.
@@ -41,7 +54,12 @@ export class UserController {
         return UserController.#users.find(user => user.username === username);
     }
 
-    // Validate the by comparing the provided password with stored hashed password.
+    // Find the individual user by their ID.
+    static async getUserByID(id) {
+        return UserController.#users.find(user => user.id === id);
+    }
+
+    // Validate the user by comparing the provided password with stored hashed password.
     static async validateUser(username, password) {
         const user = UserController.findUserByUsername(username);
 
@@ -50,6 +68,18 @@ export class UserController {
         }
 
         return await comparePasswords(password, user.password);
+    }
+
+    static async getAllUsers() {
+        return UserController.#users;
+    }
+
+    static async updateUserChat(id, chat) {
+        const user = UserController.getUserByID(id);
+        if (user) {
+            user.chats.push(chat);
+            await UserController.saveUsers();
+        }
     }
 
     // Handle user login by validating credentials and managing session state.
