@@ -29,8 +29,11 @@ router.get("/success", (request, response) => {
 });
 
 router.get("/admin", (request, response) => {
+    const users = UserController.getAllUsers();
+    console.log("Admin users:", users);
+    
     response.render("admin", {
-        users: UserController.getAllUsers(),
+        users: users,
     });
 });
 
@@ -42,6 +45,7 @@ router.get("/logout", (request, response) => {
 // POST-routes for handling the form data.
 router.post("/login", UserController.login);
 router.post("/register", UserController.register);
-router.post("/update", UserController.updateUserChat);
+router.post("/update/:id&:level", UserController.updateUserLevel);
+router.post("/delete/:id", UserController.deleteUser);
 
 export default router;

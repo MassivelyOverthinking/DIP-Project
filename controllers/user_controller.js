@@ -72,8 +72,20 @@ export class UserController {
         return await comparePasswords(password, user.password);
     }
 
-    static async getAllUsers() {
+    static getAllUsers() {
         return UserController.#users;
+    }
+
+    static async updateUserLevel(request, response) {
+        const { id, level } = request.params;
+        const user = await UserController.getUserByID(parseInt(id));
+
+        if (user) {
+            user.setLevel(level);
+            await UserController.saveUsers();
+        }
+
+        response.redirect("/");
     }
 
     static async updateUserChat(id, chat) {
@@ -82,6 +94,13 @@ export class UserController {
             user.chats.push(chat);
             await UserController.saveUsers();
         }
+    }
+
+    static async deleteUser(request, response) {
+        const { id } = request.params;
+        UserController.#users = UserController.#users.filter(user => user.id !== parseInt(id));
+        await UserController.saveUsers();
+        response.redirect("/");
     }
 
     // Handle user login by validating credentials and managing session state.
