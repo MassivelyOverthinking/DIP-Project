@@ -12,6 +12,11 @@ import { ChatController } from '../controllers/chat_controller.js';
 const router = express.Router();
 
 // GET-routes for rendering the webpages.
+router.use((req, res, next) => {
+    console.log("CHAT ROUTER HIT:", req.method, req.originalUrl);
+    next();
+});
+
 router.get("/home", (request, response) => {
     response.render("home", {
         user: request.session.user,

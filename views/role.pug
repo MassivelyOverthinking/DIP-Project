@@ -1,0 +1,30 @@
+doctype html
+html(lang="en")
+    include templates/head.pug
+    include templates/formButton.pug
+    +headpage("Change Role", "/style_login.css")
+    body
+        main.auth-page
+            section.auth-card
+                .auth-header
+                    h1 Change Role
+                    p Change the role of a user
+
+                form.auth-form(
+                    action="/user/update",
+                    method="post",
+                    onsubmit="return confirm('Are you sure you want to change this user role?');"
+                )
+                    input(type="hidden", name="id", value=userId)
+
+                    select.dropdown(name="level", required)
+                        option(value="0") Select new role
+                        option(value="1") User
+                        option(value="2") Manager
+                        option(value="3") Admin
+
+                    +form-button("Change Role")
+
+                button(type="button") 
+                    a(href="/") 
+                        span.text Return

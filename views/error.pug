@@ -1,11 +1,11 @@
 html(lang="en")
-    include head.pug
+    include templates/head.pug
     +headpage('No Access', '/style_login.css')
     body 
         main.auth-page
             section.auth-card
                 .auth-header
-                    h1 No Access
+                    h1= error
 
                 p.footer
-                    a(href="/user/login") Go to Login Page
+                    a(href="/") Go to Login Page

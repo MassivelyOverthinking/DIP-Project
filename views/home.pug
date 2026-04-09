@@ -1,10 +1,9 @@
 doctype html
 html(lang="en")
-    include head.pug
+    include templates/head.pug
+    include templates/chatCard.pug
     +headpage('Home Page', '/style_homepage.css')
     body
-        include chatCard.pug
-
         main.home-page
             section.home-card
                 .home-header
@@ -22,21 +21,24 @@ html(lang="en")
                     if user.level !== "1"
                         a(href="/chat/create")
                             button.secondary-btn(type="button")
-                                strong Create Chatroom
+                                span.text Create Chatroom
                     if user.level === "3"
-                        a(href="/admin")
+                        a(href="/user/admin")
                             button.secondary-btn(type="button")
-                                strong Manage
+                                span.text Manage
                     a(href="/user/logout")
                         button.secondary-btn(type="button")
-                            strong Log out
+                            span.text Log out
 
                 .chat-section
                     h2 Your Chatrooms
 
                     if chats && chats.length > 0
                             each chat in chats
-                                +chatCard(chat)
+                                if chat.participant === user.id || chat.owner === user.id
+                                    +chatCard(chat, user.level, user.id)
+                                else if user.level === "3"
+                                    +chatCard(chat, user.level, user.id)
                     else
                         .empty-state
                             p You are not part of any chatrooms yet.

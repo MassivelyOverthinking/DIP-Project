@@ -7,10 +7,14 @@ import { User } from "../models/user.js";
 import fs from "fs/promises"
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// USER CONTROLLER FUNCTIONS
+// CONSTANTS
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 const filePath = "./data/users.json"    // Internal file-path
+
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// CONTROLLER: USER CONTROLLER
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 export class UserController {
     static #users = [];             // Private static variable.
@@ -22,7 +26,9 @@ export class UserController {
 
         try {
             const data = await fs.readFile(filePath, "utf-8");
-            UserController.#users = JSON.parse(data);
+            const usersData = JSON.parse(data);
+
+            UserController.#users = usersData.map(user => User.fromJSON(user));
 
             const newId = UserController.setUserID();
 
@@ -36,6 +42,10 @@ export class UserController {
         UserController.#initialized = true;
     }
 
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    // CONTROLLER: HELPER METHODS
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
     static setUserID() {
         const maxId = UserController.#users.reduce((max, user) => {
             return user.id > max ? user.id : max;
@@ -46,7 +56,16 @@ export class UserController {
 
     // Method for saving current users to JSON file.
     static async saveUsers() {
-        await fs.writeFile(filePath, JSON.stringify(UserController.#users, null, 2), "utf-8");
+        await fs.writeFile(filePath, JSON.stringify(UserController.#users), "utf-8");
+    }
+
+    static getAllUsers() {
+        return UserController.#users;
+    }
+
+    // Find the individual user by their ID.
+    static getUserByID(id) {
+        return UserController.#users.find(user => user.id === id);
     }
 
     // Find the individual user by their username.
@@ -54,9 +73,12 @@ export class UserController {
         return UserController.#users.find(user => user.username === username);
     }
 
-    // Find the individual user by their ID.
-    static async getUserByID(id) {
-        return UserController.#users.find(user => user.id === id);
+    static async updateUserChat(id, chat) {
+        const user = UserController.getUserByID(id);
+        if (user) {
+            user.chats.push(chat);
+            await UserController.saveUsers();
+        }
     }
 
     // Validate the user by comparing the provided password with stored hashed password.
@@ -70,16 +92,29 @@ export class UserController {
         return await comparePasswords(password, user.password);
     }
 
-    static async getAllUsers() {
-        return UserController.#users;
-    }
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    // CONTROLLER: REQUEST HANDLERS
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-    static async updateUserChat(id, chat) {
-        const user = UserController.getUserByID(id);
+    static async updateUserLevel(request, response) {
+        const { id, level } = request.body;
+        const user = await UserController.getUserByID(parseInt(id));
+
+        console.log("ID:", id, "Level:", level);
+
         if (user) {
-            user.chats.push(chat);
+            user.setLevel(level);
             await UserController.saveUsers();
         }
+
+        response.redirect("/");
+    }
+
+    static async deleteUser(request, response) {
+        const { id } = request.params;
+        UserController.#users = UserController.#users.filter(user => user.id !== parseInt(id));
+        await UserController.saveUsers();
+        response.redirect("/");
     }
 
     // Handle user login by validating credentials and managing session state.
@@ -107,11 +142,11 @@ export class UserController {
             const { username, password, repeat, first_name, last_name, level } = request.body;
 
             if (UserController.findUserByUsername(username)) {
-                return response.status(400).send("User already exists");
+                return response.redirect(`/user/no-access/username-taken`);
             }
 
             if (password !== repeat) {
-                return response.status(400).send("Passwords do not match");
+                return response.redirect(`/user/no-access/passwords-dont-match`);
             }
 
             const hashedPassword = await hashPassword(password);

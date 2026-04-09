@@ -3,6 +3,8 @@
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 export class Message {
+    static id = 1;
+
     constructor(message, date, owner, chatID) {
         this.message = message;
         this.date = date;
@@ -10,5 +12,4 @@ export class Message {
         this.chatID = chatID;
         this.id = Message.id++;
     }
-    static id = 1;
 }
