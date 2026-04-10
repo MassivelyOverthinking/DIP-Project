@@ -1,0 +1,37 @@
+doctype html
+html(lang="en")
+    include templates/head.pug
+    include templates/chatMessage.pug
+
+    +headpage("Chatroom", "/style_chatroom.css")
+    body
+        main.chatroom-page
+            section.chatroom-card
+                header.chatroom-header
+                    .chatroom-header-top
+                        h1.chatroom-title= chat && chat.name ? chat.name : "Chatroom"
+                        a.back-link(href="/")
+                            button(type="button")
+                                span Back to Home
+
+                section.chat-window
+                    if messages && messages.length > 0
+                        each message in messages
+                            +chatMessage(message, user.id)
+                    else
+                        .empty-chat
+                            p No messages yet. Start the conversation below.
+
+                form.chat-input-form(method="POST", action="/messages/create")
+                    input(type="hidden", name="chatId", value=chat.id)
+
+                    .chat-input-wrapper
+                        input.chat-input(
+                            type="text"
+                            name="text"
+                            placeholder="Type your message and press Enter..."
+                            required
+                            autocomplete="on"
+                        )
+                        button.send-btn(type="submit")
+                            span.text Send

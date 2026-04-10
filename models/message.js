@@ -12,4 +12,11 @@ export class Message {
         this.chatID = chatID;
         this.id = Message.id++;
     }
+
+    static fromJSON(json) {
+        const chat = new Message(json.message, json.date, json.owner, json.chatID);
+        chat.id = json.id;
+        
+        return chat;
+    }
 }

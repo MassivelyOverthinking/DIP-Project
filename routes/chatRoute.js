@@ -2,7 +2,7 @@
 // IMPORTS & MODULES
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-import express from 'express';
+import express, { request } from 'express';
 import { ChatController } from '../controllers/chat_controller.js';
 import { getErrorMessage } from '../utility/utils.js';
 
@@ -36,6 +36,16 @@ router.get("/no-access/:type", (request, response) => {
 
 router.get("/create", (request, response) => {
     response.render("chat");
+});
+
+router.get("/:id", (request, response) => {
+    const chatId = request.params.id;
+    const chatObject = ChatController.findById(chatId);
+    
+    response.render("chatroom", { 
+        user: request.session.user, 
+        chat: chatObject
+    });
 });
 
 // POST-routes for handling the form data.

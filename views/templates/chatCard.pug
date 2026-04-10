@@ -10,8 +10,12 @@ mixin chatCard(chat, userLevel, userId)
                 span.count #{chat.messages ? chat.messages.length : 0} messages
 
         .chat-actions
-            button(type="button") 
-                span.text Open
+            form(
+                    action=`/chat/${chat.id}`, 
+                    method="get"
+                )
+                    button(type="submit") 
+                        span.text Open
             if userLevel === "3" || chat.owner === userId
                 form(
                     action=`/chat/delete/${chat.id}`, 

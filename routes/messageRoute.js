@@ -3,11 +3,15 @@
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 import express from 'express';
+import { MessageController } from '../controllers/message_controller.js';
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // MESSAGE ROUTE
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 const router = express.Router();
+
+router.post("/create", MessageController.create);
+router.post("/delete/:id", MessageController.remove);
 
 export default router;
