@@ -15,6 +15,14 @@ export function getErrorMessage(type) {
             return "Username is already taken.";
         case "passwords-dont-match":
             return "Passwords do not match.";
+        case "cant-find-user":
+            return "Could not find user with that ID.";
+        case "chat-with-yourself":
+            return "You cant chat with yourself.";
+        case "no-owner":
+            return "Chat must have an owner.";
+        case "no-chat":
+            return "Chat could not be created.";
         case "404":
             return "The page you are looking for does not exist.";
         default:

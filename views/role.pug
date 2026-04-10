@@ -2,6 +2,7 @@ doctype html
 html(lang="en")
     include templates/head.pug
     include templates/formButton.pug
+    include templates/dropdown.pug
     +headpage("Change Role", "/style_login.css")
     body
         main.auth-page
@@ -17,14 +18,10 @@ html(lang="en")
                 )
                     input(type="hidden", name="id", value=userId)
 
-                    select.dropdown(name="level", required)
-                        option(value="0") Select new role
-                        option(value="1") User
-                        option(value="2") Manager
-                        option(value="3") Admin
+                    +dropdown()
 
                     +form-button("Change Role")
 
-                button(type="button") 
-                    a(href="/") 
+                a(href="/")
+                    button(type="button")  
                         span.text Return

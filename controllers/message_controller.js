@@ -2,6 +2,10 @@
 // IMPORTS & MODULES
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
+import fs from "fs/promises";
+import { Message } from "../models/message.js";
+import { ChatController } from "./chat_controller.js";
+
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // MESSAGE CONTROLLER FUNCTIONS
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -12,44 +16,55 @@ export class MessageController {
     static #messages = [];
     static #initialized = false;
 
-    static async initialize() {
-        if (this.#initialized) return;
+    static async startup() {
+        if (MessageController.#initialized) return;
 
         try {
             const data = await fs.readFile(filePath, "utf-8");
-            this.#messages = JSON.parse(data);
+            const JSONdata = JSON.parse(data);
+            
+            MessageController.#messages = JSONdata.map(msg => Message.fromJSON(msg));
+
+            const newId = MessageController.setMessageID();
+            
+            Message.id = newId + 1;
         } catch {
-            this.#messages = [];
+            MessageController.#messages = [];
+            Message.id = 0;
         }
 
-        this.#initialized = true;
+        MessageController.#initialized = true;
+    }
+
+    static setMessageID() {
+        const maxId = MessageController.#messages.reduce((max, msg) => {
+            return msg.id > max ? msg.id : max;
+        }, -1);
+
+        return maxId;
     }
 
     static async saveMessages() {
-        await fs.writeFile(filePath, JSON.stringify(this.#messages, null, 2));
+        await fs.writeFile(filePath, JSON.stringify(MessageController.#messages));
     }
 
     static findById(id) {
-        return this.#messages.find(m => m.id == id);
+        return MessageController.#messages.find(m => m.id == id);
     }
 
     static findByChat(chatID) {
-        return this.#messages.filter(m => m.chatID == chatID);
+        return MessageController.#messages.filter(m => m.chatID == chatID);
     }
 
     // GET /chats/:id/messages
     static async getByChat(req, res) {
-        await this.initialize();
-
-        const msgs = this.findByChat(req.params.id);
+        const msgs = MessageController.findByChat(req.params.id);
         res.json(msgs);
     }
 
     // GET /chats/:id/messages/:mid
     static async getOne(req, res) {
-        await this.initialize();
-
-        const msg = this.findById(req.params.mid);
+        const msg = MessageController.findById(req.params.mid);
         if (!msg) return res.status(404).send("Ikke fundet");
 
         res.json(msg);
@@ -57,42 +72,46 @@ export class MessageController {
 
     // POST /chats/:id/messages
     static async create(req, res) {
-        await this.initialize();
-
         if (!req.session.user) return res.status(401).send("Log ind");
-
-        if (req.session.user.level < 2) {
-            return res.status(403).send("Ingen rettigheder");
-        }
 
         const newMsg = new Message(
             req.body.text,
             new Date(),
             req.session.user.id,
-            req.params.id
+            req.session.user.username,
+            req.body.chatId
         );
 
-        this.#messages.push(newMsg);
-        await this.saveMessages();
+        const chat = ChatController.findById(req.body.chatId);
+        if (!chat) return res.status(404).send("Chat ikke fundet");
 
-        res.json(newMsg);
+        chat.messages.push(newMsg);
+        await ChatController.saveChats();
+
+        console.log("id", req.body.chatId);
+        console.log("message", req.body.text);
+
+        MessageController.#messages.push(newMsg);
+        await MessageController.saveMessages();
+
+        res.redirect(`/chat/${req.body.chatId}`);
     }
 
     // DELETE /chats/:id/messages/:mid
     static async remove(req, res) {
-        await this.initialize();
-
-        const msg = this.findById(req.params.mid);
+        const msg = MessageController.findById(req.params.id);
         if (!msg) return res.status(404).send("Ikke fundet");
 
         if (req.session.user.level < 3 && msg.owner != req.session.user.id) {
             return res.status(403).send("Ingen adgang");
         }
 
-        this.#messages = this.#messages.filter(m => m.id != req.params.mid);
-        await this.saveMessages();
+        ChatController.deleteMessageFromChat(req.params.chatID, req.params.id);
 
-        res.send("Slettet");
+        MessageController.#messages = MessageController.#messages.filter(m => m.id != req.params.id);
+        await MessageController.saveMessages();
+
+        res.redirect(`/chat/${req.params.chatID}`);
     }
 }
 

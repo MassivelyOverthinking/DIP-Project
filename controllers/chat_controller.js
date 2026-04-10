@@ -64,14 +64,33 @@ export class ChatController {
         return ChatController.#chats.find(c => c.id == id);
     }
 
+    static async deleteMessageFromChat(chatId, messageId) {
+        const chat = ChatController.findById(chatId);
+        if (!chat) return null;
+
+        if (!Array.isArray(chat.messages)) {
+            chat.messages = [];
+        }
+
+        console.log("Deleting message with ID", messageId, "from chat", chatId);
+
+        chat.messages = chat.messages.filter(
+            message => Number(message.id) !== Number(messageId)
+        );
+
+        await ChatController.saveChats();
+
+        console.log("Updated chat messages:", chat.messages);
+
+        return chat;
+    }
+
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     // CONTROLLER: REQUEST HANDLERS
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // GET /chats/:id
     static async getOne(request, response) {
-        await ChatController.startup();
-
         const chat = ChatController.findById(request.params.id);
         if (!chat) return response.status(404).send("Chat not found");
 
@@ -81,26 +100,20 @@ export class ChatController {
     // POST /chats
     static async create(request, response) {
         try {
-            if (!request.session.user) {
-                 return response.status(401).send("Log ind") 
-            };
-            
-            if (request.session.user.level < 2) {
-                return response.status(403).send("Ingen rettigheder");
-            }
-
             const owner = UserController.getUserByID(request.session.user.id);
             const participantId = parseInt(request.body.participant);
             const participant = UserController.getUserByID(participantId);
 
             if (!owner) {
-                return response.status(404).render("error", {
-                    error: "Ejer ikke fundet"
-                });
+                return response.redirect("/chat/no-access/no-owner");
             }
 
             if (!participant) {
-                return response.status(400).send("Deltager ikke fundet");
+                return response.redirect("/chat/no-access/cant-find-user");
+            }
+
+            if (owner.id === participant.id) {
+                return response.redirect(`/chat/no-access/chat-with-yourself`);
             }
             
             const newChat = new Chat(
@@ -122,7 +135,7 @@ export class ChatController {
             return response.redirect("/");
         } catch (error) {
             console.error("Error creating chat:", error);
-            response.status(500).send("Fejl ved oprettelse af chat");
+            response.redirect("/chat/no-access/no-chat");
         }
     }
 
@@ -138,6 +151,6 @@ export class ChatController {
         ChatController.#chats = ChatController.#chats.filter(c => c.id != request.params.id);
         await ChatController.saveChats();
 
-        response.send("Slettet");
+        response.redirect("/");
     }
 }

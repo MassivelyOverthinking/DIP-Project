@@ -21,7 +21,8 @@ html(lang="en")
                     if users && users.length > 0
                         .chat-list
                             each user in users
-                                +userCard(user)
+                                if user.id !== owner
+                                    +userCard(user)
                     else
                         .empty-state
                             p No users found.

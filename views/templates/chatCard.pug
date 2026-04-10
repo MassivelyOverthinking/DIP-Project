@@ -1,4 +1,4 @@
-mixin chatCard(chat, userLevel, userId)
+mixin chatCard(chat, userLevel, userId, username)
     .chat-card(data-id=chat.id)
         .chat-card-content
             .chat-card-header
@@ -6,12 +6,22 @@ mixin chatCard(chat, userLevel, userId)
                 span.chat-date= chat.date
 
             .chat-meta
-                span.owner Created by #{chat.owner}
+                span.owner Created by #{username}, 
+
                 span.count #{chat.messages ? chat.messages.length : 0} messages
 
         .chat-actions
-            button(type="button") 
-                span.text Open
+            form(
+                    action=`/chat/${chat.id}`, 
+                    method="get"
+                )
+                    button(type="submit") 
+                        span.text Open
             if userLevel === "3" || chat.owner === userId
-                button(type="button") 
-                    span.text Delete
+                form(
+                    action=`/chat/delete/${chat.id}`, 
+                    method="post", 
+                    onsubmit="return confirm('Are you sure you want to delete this chat?');"
+                )
+                    button(type="submit") 
+                        span.text Delete

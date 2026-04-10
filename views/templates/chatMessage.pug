@@ -1,0 +1,13 @@
+mixin chatMessage(message, currentUserId, userLevel)
+    .message-card
+        .message-content
+            .message-header
+                span.message-user= message.username
+
+        .message-main
+            p.message-text= message.message
+
+        
+            if userLevel > 1 && message.owner === currentUserId
+                form(method="POST", action=`/messages/${message.chatID}/delete/${message.id}`)
+                    button.delete-btn(type="submit") Delete

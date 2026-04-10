@@ -7,6 +7,7 @@ import session from "express-session"
 
 import { UserController } from "./controllers/user_controller.js"
 import { ChatController } from "./controllers/chat_controller.js"
+import { MessageController } from "./controllers/message_controller.js"
 
 import userRouter from "./routes/userRoute.js"
 import chatRouter from "./routes/chatRoute.js"
@@ -43,6 +44,7 @@ app.use(express.json())             // Middleware to properly receive and parse 
 
 await UserController.startup();
 await ChatController.startup();
+await MessageController.startup();
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // EXPRESS ROUTES
