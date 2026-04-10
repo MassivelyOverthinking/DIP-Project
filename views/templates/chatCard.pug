@@ -1,4 +1,4 @@
-mixin chatCard(chat, userLevel, userId)
+mixin chatCard(chat, userLevel, userId, username)
     .chat-card(data-id=chat.id)
         .chat-card-content
             .chat-card-header
@@ -6,7 +6,8 @@ mixin chatCard(chat, userLevel, userId)
                 span.chat-date= chat.date
 
             .chat-meta
-                span.owner Created by #{chat.owner}
+                span.owner Created by #{username}, 
+
                 span.count #{chat.messages ? chat.messages.length : 0} messages
 
         .chat-actions

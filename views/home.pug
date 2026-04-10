@@ -36,9 +36,9 @@ html(lang="en")
                     if chats && chats.length > 0
                             each chat in chats
                                 if chat.participant === user.id || chat.owner === user.id
-                                    +chatCard(chat, user.level, user.id)
+                                    +chatCard(chat, user.level, user.id, user.username)
                                 else if user.level === "3"
-                                    +chatCard(chat, user.level, user.id)
+                                    +chatCard(chat, user.level, user.id, user.username)
                     else
                         .empty-state
                             p You are not part of any chatrooms yet.
