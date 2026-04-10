@@ -13,6 +13,8 @@ import { UserController } from '../controllers/user_controller.js';
 const router = express.Router();
 
 // GET-routes for rendering the webpages.
+
+// Test for logging the route hits.
 router.use((req, res, next) => {
     console.log("USER ROUTER HIT:", req.method, req.originalUrl);
     next();

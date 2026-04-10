@@ -7,10 +7,14 @@ import { Message } from "../models/message.js";
 import { ChatController } from "./chat_controller.js";
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-// MESSAGE CONTROLLER FUNCTIONS
+// CONSTANTS
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 const filePath = "./data/messages.json";
+
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// CONTROLLER: MESSAGE CONTROLLER
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 export class MessageController {
     static #messages = [];
@@ -36,6 +40,10 @@ export class MessageController {
         MessageController.#initialized = true;
     }
 
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    // HELPER METHODS
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
     static setMessageID() {
         const maxId = MessageController.#messages.reduce((max, msg) => {
             return msg.id > max ? msg.id : max;
@@ -56,62 +64,48 @@ export class MessageController {
         return MessageController.#messages.filter(m => m.chatID == chatID);
     }
 
-    // GET /chats/:id/messages
-    static async getByChat(req, res) {
-        const msgs = MessageController.findByChat(req.params.id);
-        res.json(msgs);
-    }
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    // REQUEST HANDLERS
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-    // GET /chats/:id/messages/:mid
-    static async getOne(req, res) {
-        const msg = MessageController.findById(req.params.mid);
-        if (!msg) return res.status(404).send("Ikke fundet");
-
-        res.json(msg);
-    }
-
-    // POST /chats/:id/messages
-    static async create(req, res) {
-        if (!req.session.user) return res.status(401).send("Log ind");
+    static async create(request, response) {
+        if (!request.session.user) return response.status(401).send("Log ind");
 
         const newMsg = new Message(
-            req.body.text,
+            request.body.text,
             new Date(),
-            req.session.user.id,
-            req.session.user.username,
-            req.body.chatId
+            request.session.user.id,
+            request.session.user.username,
+            request.body.chatId
         );
 
-        const chat = ChatController.findById(req.body.chatId);
-        if (!chat) return res.status(404).send("Chat ikke fundet");
+        const chat = ChatController.findById(request.body.chatId);
+        if (!chat) return response.status(404).send("Chat ikke fundet");
 
         chat.messages.push(newMsg);
         await ChatController.saveChats();
 
-        console.log("id", req.body.chatId);
-        console.log("message", req.body.text);
-
         MessageController.#messages.push(newMsg);
         await MessageController.saveMessages();
 
-        res.redirect(`/chat/${req.body.chatId}`);
+        response.redirect(`/chat/${request.body.chatId}`);
     }
 
     // DELETE /chats/:id/messages/:mid
-    static async remove(req, res) {
-        const msg = MessageController.findById(req.params.id);
-        if (!msg) return res.status(404).send("Ikke fundet");
+    static async delete(request, response) {
+        const msg = MessageController.findById(request.params.id);
+        if (!msg) return response.status(404).send("Ikke fundet");
 
-        if (req.session.user.level < 3 && msg.owner != req.session.user.id) {
-            return res.status(403).send("Ingen adgang");
+        if (request.session.user.level < 3 && msg.owner != request.session.user.id) {
+            return response.status(403).send("Ingen adgang");
         }
 
-        ChatController.deleteMessageFromChat(req.params.chatID, req.params.id);
+        ChatController.deleteMessageFromChat(request.params.chatID, request.params.id);
 
-        MessageController.#messages = MessageController.#messages.filter(m => m.id != req.params.id);
+        MessageController.#messages = MessageController.#messages.filter(m => m.id != request.params.id);
         await MessageController.saveMessages();
 
-        res.redirect(`/chat/${req.params.chatID}`);
+        response.redirect(`/chat/${request.params.chatID}`);
     }
 }
 

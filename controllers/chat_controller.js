@@ -72,15 +72,11 @@ export class ChatController {
             chat.messages = [];
         }
 
-        console.log("Deleting message with ID", messageId, "from chat", chatId);
-
         chat.messages = chat.messages.filter(
             message => Number(message.id) !== Number(messageId)
         );
 
         await ChatController.saveChats();
-
-        console.log("Updated chat messages:", chat.messages);
 
         return chat;
     }
@@ -89,15 +85,7 @@ export class ChatController {
     // CONTROLLER: REQUEST HANDLERS
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-    // GET /chats/:id
-    static async getOne(request, response) {
-        const chat = ChatController.findById(request.params.id);
-        if (!chat) return response.status(404).send("Chat not found");
-
-        response.json(chat);
-    }
-
-    // POST /chats
+    // Create a new chat and save it.
     static async create(request, response) {
         try {
             const owner = UserController.getUserByID(request.session.user.id);
@@ -134,18 +122,17 @@ export class ChatController {
 
             return response.redirect("/");
         } catch (error) {
-            console.error("Error creating chat:", error);
             response.redirect("/chat/no-access/no-chat");
         }
     }
 
-    // DELETE /chats/:id
-    static async remove(request, response) {
+    // Delete a chat by its ID.
+    static async delete(request, response) {
         const chat = ChatController.findById(request.params.id);
         if (!chat) return response.status(404).send("Chat not found");
 
         if (request.session.user.level < 3 && chat.owner != request.session.user.id) {
-            return response.status(403).send("Ingen adgang");
+            return response.redirect("/chat/no-access/no-credentials");
         }
 
         ChatController.#chats = ChatController.#chats.filter(c => c.id != request.params.id);

@@ -13,9 +13,15 @@ import { getErrorMessage } from '../utility/utils.js';
 const router = express.Router();
 
 // GET-routes for rendering the webpages.
+
+// Test for logging the route hits.
 router.use((req, res, next) => {
     console.log("CHAT ROUTER HIT:", req.method, req.originalUrl);
     next();
+});
+
+router.get("/create", (request, response) => {
+    response.render("chat");
 });
 
 router.get("/home", (request, response) => {
@@ -34,10 +40,6 @@ router.get("/no-access/:type", (request, response) => {
     });
 });
 
-router.get("/create", (request, response) => {
-    response.render("chat");
-});
-
 router.get("/:id", (request, response) => {
     const chatId = request.params.id;
     const chatObject = ChatController.findById(chatId);
@@ -48,8 +50,8 @@ router.get("/:id", (request, response) => {
     });
 });
 
-// POST-routes for handling the form data.
+// POST-routes for handling chatroom creation and deletion
 router.post("/create", ChatController.create);
-router.post("/delete/:id", ChatController.remove);
+router.post("/delete/:id", ChatController.delete);
 
 export default router;

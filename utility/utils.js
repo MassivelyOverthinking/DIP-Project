@@ -23,8 +23,8 @@ export function getErrorMessage(type) {
             return "Chat must have an owner.";
         case "no-chat":
             return "Chat could not be created.";
-        case "404":
-            return "The page you are looking for does not exist.";
+        case "no-credentials":
+            return "You do not have the credentials to perform this action.";
         default:
             return "An unknown error occurred.";
     }
