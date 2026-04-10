@@ -31,5 +31,3 @@ Hver Chat vil bestå af en kort række af besker sendt af begge brugere.
 Som anset i kodebasen så har vi igennem projektets gang brugt controller-klasserne oven i hinanden, selvom vi har forstået at dette valg af opbygning generelt bryder med den arkitektur-model **(MVC)** som vi forsøgte at anvende.
 Grunden til dette valgt var generelt tidspres kombineret med det faktum at vi ikke fuldt ud viste dette ikke var den korrekte tilgang før sent henne af den sidste arbejdsdag. Resultatet af dette er yderst høj kobling af logik på bagenden, som kunne være løst af et konkret mellem-lager mellem de eksisterende **Controller**-klasser, som håndterede logik på tværs af instanser.
 Som et eksempel på hvordan sådan et mellemlager kunne udformes og anvendes har vi kort forsøgt at implementere **MiddleLayer**-klassen i **Service**-folderen. Denne bruges til **safeDelete**- og **safeCreate**-metoderne i Message-Controller. 
-
-De individuelle burgere kan sletter beskeder, baseret på deres anvendelses niveau, men der er ikke mulighed for at kunne redigere eksisterende beskeder efter de er blevet sendt.
