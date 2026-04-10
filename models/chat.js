@@ -21,7 +21,7 @@ export class Chat {
         return chat;
     }
 
-    async addMessage(messageID) {
+    addMessage(messageID) {
         this.messages.push(messageID);
     }
 }

@@ -5,6 +5,7 @@
 import fs from "fs/promises";
 import { Message } from "../models/message.js";
 import { ChatController } from "./chat_controller.js";
+import { MiddleLayer } from "../service/middleLayer.js";
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 // CONSTANTS
@@ -56,6 +57,10 @@ export class MessageController {
         await fs.writeFile(filePath, JSON.stringify(MessageController.#messages));
     }
 
+    static addMessage(message) {
+        MessageController.#messages.push(message);
+    }
+
     static findById(id) {
         return MessageController.#messages.find(m => m.id == id);
     }
@@ -76,6 +81,7 @@ export class MessageController {
     // REQUEST HANDLERS
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
+    // DEPRECATED
     static async create(request, response) {
         const newMsg = new Message(
             request.body.text,
@@ -97,6 +103,7 @@ export class MessageController {
         response.redirect(`/chat/${request.body.chatId}`);
     }
 
+    // DEPRECATED
     static async delete(request, response) {
         const msg = MessageController.findById(request.params.id);
         if (!msg) return response.status(404).send("Ikke fundet");
@@ -107,6 +114,35 @@ export class MessageController {
         await MessageController.saveMessages();
 
         response.redirect(`/chat/${request.params.chatID}`);
+    }
+
+    static async safeCreate(request, response) {
+        try {
+            await MiddleLayer.createMessage(
+                request.body.text,
+                request.session.user.id,
+                request.session.user.username,
+                request.body.chatId
+            )
+
+            response.redirect(`/chat/${request.body.chatId}`);
+        } catch (error) {
+            return response.status(404).send("Server Error");
+        }
+    }
+
+    static async safeDelete(request, response) {
+        try {
+            await MiddleLayer.deleteMessage(
+                request.params.chatID,
+                request.params.id
+            )
+
+            response.redirect(`/chat/${request.params.chatID}`);
+        } catch (error) {
+            console.log(error);
+            return response.status(404).send("Server Error");
+        }
     }
 }
 
