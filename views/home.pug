@@ -2,7 +2,7 @@ doctype html
 html(lang="en")
     include templates/head.pug
     include templates/chatCard.pug
-    +headpage('Home Page', '/style_homepage.css')
+    +headpage("Home Page", "/style_homepage.css")
     body
         main.home-page
             section.home-card
@@ -20,14 +20,14 @@ html(lang="en")
                 .home-actions
                     if user.level !== "1"
                         a(href="/chat/create")
-                            button.secondary-btn(type="button")
+                            button(type="button")
                                 span.text Create Chatroom
                     if user.level === "3"
                         a(href="/user/admin")
-                            button.secondary-btn(type="button")
+                            button(type="button")
                                 span.text Manage
                     a(href="/user/logout")
-                        button.secondary-btn(type="button")
+                        button(type="button")
                             span.text Log out
 
                 .chat-section

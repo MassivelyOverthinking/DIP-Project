@@ -13,8 +13,10 @@ import { UserController } from '../controllers/user_controller.js';
 const router = express.Router();
 
 // GET-routes for rendering the webpages.
-router.use((req, res, next) => {
-    console.log("USER ROUTER HIT:", req.method, req.originalUrl);
+
+// Test for logging the route hits.
+router.use((request, response, next) => {
+    console.log("USER ROUTER HIT:", request.method, request.originalUrl);
     next();
 });
 
@@ -42,7 +44,6 @@ router.get("/no-access/:type", (request, response) => {
 router.get("/admin", (request, response) => {
     const users = UserController.getAllUsers();
     const owner = request.session.user.id;
-    console.log("Admin users:", users);
     
     response.render("admin", {
         users: users,
@@ -52,7 +53,6 @@ router.get("/admin", (request, response) => {
 
 router.get("/change-role/:id", (request, response) => {
     const { id } = request.params;
-    console.log("Changing role for user ID:", id);
 
     response.render("role", {
         userId: id,

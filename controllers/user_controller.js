@@ -131,8 +131,7 @@ export class UserController {
 
             return response.redirect(`/user/no-access`);
         } catch (error) {
-            console.error("Error during login:", error);
-            return response.status(500).send("Internal Server Error");
+            return response.redirect(`/user/no-access/general-error`);
         }
     }
 
@@ -166,8 +165,7 @@ export class UserController {
 
             return response.redirect("/user/success");
         } catch (error) {
-            console.error("Error during user registration:", error);
-            return response.status(500).send("Internal Server Error");
+            return response.redirect(`/user/no-access/general-error`);
         }
     }
 }
