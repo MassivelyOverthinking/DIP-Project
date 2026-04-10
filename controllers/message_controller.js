@@ -64,13 +64,19 @@ export class MessageController {
         return MessageController.#messages.filter(m => m.chatID == chatID);
     }
 
+    static async deleteById(id) {
+        MessageController.#messages = MessageController.#messages.filter(
+            m => m.chatID != id
+        );
+
+        MessageController.saveMessages();
+    }
+
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     // REQUEST HANDLERS
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     static async create(request, response) {
-        if (!request.session.user) return response.status(401).send("Log ind");
-
         const newMsg = new Message(
             request.body.text,
             new Date(),
@@ -91,14 +97,9 @@ export class MessageController {
         response.redirect(`/chat/${request.body.chatId}`);
     }
 
-    // DELETE /chats/:id/messages/:mid
     static async delete(request, response) {
         const msg = MessageController.findById(request.params.id);
         if (!msg) return response.status(404).send("Ikke fundet");
-
-        if (request.session.user.level < 3 && msg.owner != request.session.user.id) {
-            return response.status(403).send("Ingen adgang");
-        }
 
         ChatController.deleteMessageFromChat(request.params.chatID, request.params.id);
 

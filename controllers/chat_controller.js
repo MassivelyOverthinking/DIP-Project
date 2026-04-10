@@ -4,6 +4,7 @@
 
 import { Chat } from "../models/chat.js";
 import { UserController } from "./user_controller.js";
+import { MessageController } from "./message_controller.js";
 import fs from "fs/promises";
 
 //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -65,8 +66,12 @@ export class ChatController {
     }
 
     static async deleteMessageFromChat(chatId, messageId) {
+        
         const chat = ChatController.findById(chatId);
-        if (!chat) return null;
+
+        if (!chat) {
+            return null
+        };
 
         if (!Array.isArray(chat.messages)) {
             chat.messages = [];
@@ -134,6 +139,9 @@ export class ChatController {
         if (request.session.user.level < 3 && chat.owner != request.session.user.id) {
             return response.redirect("/chat/no-access/no-credentials");
         }
+
+
+        await MessageController.deleteById(request.params.id)
 
         ChatController.#chats = ChatController.#chats.filter(c => c.id != request.params.id);
         await ChatController.saveChats();

@@ -17,7 +17,7 @@ mixin chatCard(chat, userLevel, userId, username)
                 )
                     button(type="submit") 
                         span.text Open
-            if userLevel === "3" || chat.owner === userId
+            if String(userLevel) === "3" || chat.owner === userId
                 form(
                     action=`/chat/delete/${chat.id}`, 
                     method="post", 

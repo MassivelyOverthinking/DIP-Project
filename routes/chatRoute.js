@@ -15,8 +15,8 @@ const router = express.Router();
 // GET-routes for rendering the webpages.
 
 // Test for logging the route hits.
-router.use((req, res, next) => {
-    console.log("CHAT ROUTER HIT:", req.method, req.originalUrl);
+router.use((request, response, next) => {
+    console.log("CHAT ROUTER HIT:", request.method, request.originalUrl);
     next();
 });
 

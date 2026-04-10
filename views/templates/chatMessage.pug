@@ -8,6 +8,6 @@ mixin chatMessage(message, currentUserId, userLevel)
             p.message-text= message.message
 
         
-            if userLevel > 1 && message.owner === currentUserId
+            if Number(userLevel) === 3 || (Number(userLevel) === 2 && Number(message.owner) === Number(currentUserId))
                 form(method="POST", action=`/messages/${message.chatID}/delete/${message.id}`)
                     button.delete-btn(type="submit") Delete

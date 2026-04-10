@@ -1,29 +1,17 @@
-# DIP Projekt 2 – Chat Server & Klient
-I dette projekt laver vi en chat-app med en server og en klient.
+# DIP Projekt 2 – Chat Applikation (Express.js, Pug, HTML, CSS)
 
-# Der er 3 niveauer brugere på siden:
+## Brugere
 
-Niveau 1    Kan kun se chats (kan ikke slette/rette egne beskeder)
-Niveau 2    Kan oprette egne chats + oprette/slette sine egne beskeder
-Niveau 3 →  Kan det hele oprette/slette andres chats og se brugere og administere.
+En bruger har: id, brugernavn, kodeord (hashed), bruger niveau (1-3):
 
-# Brugere
-En bruger har: id, brugernavn, kodeord, oprettelses niveau (1-3)
+**Niveau 1 (User) =>**  Kan kun se chats som brguerene er en aktiv del af (kan ikke slette/rette egne beskeder)
+**Niveau 2 (Moderator) =>**  Kan oprette egne chats + oprette/slette sine egne beskeder.
+**Niveau 3 (Admin) =>**  Har adgang til samtlige funktionaliteter inklusiv rettelser/sletninger af eksisterende brugere og moderatorer. 
 
-Disse er vores HTTP kommandoer vi har brugt og opfyldt de endpoints der skal kræves:
+## Yderligere information
+Som anset i kodebasen så har vi igennem projektets gang brugt controller-klasserne oven i hinanden, selvom vi har forstået at dette valg af opbygning generelt bryder med den arkitektur-model som vi forsøgte at anvende.
+Grunden til dette valgt ver generelt tidspres kombineret med det faktum at vi ikke havde fuldt ud viste dette ikke var den korrekte tilgang før sent henne af den sidste arbejdsdag. Resultatet af dette er yderst høj kobling af logik på bagenden, som kunne være løst af et konkret mellem-lager mellem de eksisterende **Controller**-klasser, som håndterede logik på tværs af instanser.
 
-**GET: hente data**
-**POST: oprette noget nyt**
+De individuelle burgere kan sletter beskeder, baseret på deres anvendelses niveau, men der er ikke mulighed for at kunne redigere eksisterende beskeder efter de er blevet sendt.
 
-# chatRoute.js
-
-# messageRoute.js
-
-# userRoute.js
-
-Vi bruger controller funktionerne i andre controller selvom det ikke er den korrekte metode, da vi fik det af vide sidst på dagen, at man skulle helst undgå det. 
-
-Vi kan slette messages og ikke editere messages
-
-# ALLE BRUGERE HAR PASSWORD: 123
-**NOTE**: Vi har nemlig hashet vores passwords med bcrypt.
+**NOTE**: Alle de nuværende brugere som er tilgængelige er har password: **123**. Vi har nemlig hashet vores passwords med bcrypt.
