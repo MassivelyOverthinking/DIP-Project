@@ -9,14 +9,14 @@ html(lang="en")
             section.chatroom-card
                 header.chatroom-header
                     .chatroom-header-top
-                        h1.chatroom-title= chat && chat.name ? chat.name : "Chatroom"
+                        h1.chatroom-title= chat && chat.name
                         a.back-link(href="/")
                             button(type="button")
                                 span Back to Home
 
                 section.chat-window
-                    if messages && messages.length > 0
-                        each message in messages
+                    if chat.messages && chat.messages.length > 0
+                        each message in chat.messages
                             +chatMessage(message, user.id)
                     else
                         .empty-chat

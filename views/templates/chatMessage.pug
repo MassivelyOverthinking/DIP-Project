@@ -1,12 +1,11 @@
 mixin chatMessage(message, currentUserId)
-    .message-card(class=message.ownerId === currentUserId ? "own" : "other")
+    .message-card
         .message-content
             .message-header
-                span.message-user= message.username
-                span.message-time= message.createdAt
+                span.message-user= message.owner
 
-            p.message-text= message.text
+        .message-main
+            p.message-text= message.message
 
-        if message.ownerId === currentUserId
             form(method="POST", action=`/messages/delete/${message.id}`)
                 button.delete-btn(type="submit") Delete
