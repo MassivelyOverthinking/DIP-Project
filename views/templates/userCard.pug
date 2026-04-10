@@ -6,8 +6,7 @@ mixin userCard(user)
                 span.chat-date @#{user.username}
 
             .chat-meta
-                span.owner User ID: ${user.id}
-                span.count Role level: ${user.level}
+                span.owner User ID: #{user.id}
 
         .chat-actions
             form(action=`/user/change-role/${user.id}`, method="get")

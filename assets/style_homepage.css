@@ -114,6 +114,12 @@ button:active {
     gap: 16px;
 }
 
+.chat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .chat-section h2 {
     color: #ffffff;
     font-size: 1.35rem;

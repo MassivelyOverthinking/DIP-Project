@@ -41,10 +41,12 @@ router.get("/no-access/:type", (request, response) => {
 
 router.get("/admin", (request, response) => {
     const users = UserController.getAllUsers();
+    const owner = request.session.user.id;
     console.log("Admin users:", users);
     
     response.render("admin", {
         users: users,
+        owner: owner,
     });
 });
 
