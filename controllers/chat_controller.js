@@ -64,6 +64,27 @@ export class ChatController {
         return ChatController.#chats.find(c => c.id == id);
     }
 
+    static async deleteMessageFromChat(chatId, messageId) {
+        const chat = ChatController.findById(chatId);
+        if (!chat) return null;
+
+        if (!Array.isArray(chat.messages)) {
+            chat.messages = [];
+        }
+
+        console.log("Deleting message with ID", messageId, "from chat", chatId);
+
+        chat.messages = chat.messages.filter(
+            message => Number(message.id) !== Number(messageId)
+        );
+
+        await ChatController.saveChats();
+
+        console.log("Updated chat messages:", chat.messages);
+
+        return chat;
+    }
+
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     // CONTROLLER: REQUEST HANDLERS
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX

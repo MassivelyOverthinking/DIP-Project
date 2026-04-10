@@ -12,6 +12,6 @@ import { MessageController } from '../controllers/message_controller.js';
 const router = express.Router();
 
 router.post("/create", MessageController.create);
-router.post("/delete/:id", MessageController.remove);
+router.post("/:chatID/delete/:id", MessageController.remove);
 
 export default router;

@@ -74,14 +74,11 @@ export class MessageController {
     static async create(req, res) {
         if (!req.session.user) return res.status(401).send("Log ind");
 
-        if (req.session.user.level < 2) {
-            return res.status(403).send("Ingen rettigheder");
-        }
-
         const newMsg = new Message(
             req.body.text,
             new Date(),
             req.session.user.id,
+            req.session.user.username,
             req.body.chatId
         );
 
@@ -97,7 +94,7 @@ export class MessageController {
         MessageController.#messages.push(newMsg);
         await MessageController.saveMessages();
 
-        res.redirect(`/`);
+        res.redirect(`/chat/${req.body.chatId}`);
     }
 
     // DELETE /chats/:id/messages/:mid
@@ -109,10 +106,12 @@ export class MessageController {
             return res.status(403).send("Ingen adgang");
         }
 
+        ChatController.deleteMessageFromChat(req.params.chatID, req.params.id);
+
         MessageController.#messages = MessageController.#messages.filter(m => m.id != req.params.id);
         await MessageController.saveMessages();
 
-        res.redirect(`/`);
+        res.redirect(`/chat/${req.params.chatID}`);
     }
 }
 

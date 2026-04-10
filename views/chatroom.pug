@@ -17,7 +17,7 @@ html(lang="en")
                 section.chat-window
                     if chat.messages && chat.messages.length > 0
                         each message in chat.messages
-                            +chatMessage(message, user.id)
+                            +chatMessage(message, user.id, user.level)
                     else
                         .empty-chat
                             p No messages yet. Start the conversation below.
